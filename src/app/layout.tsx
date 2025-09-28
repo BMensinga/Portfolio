@@ -4,6 +4,7 @@ import { type Metadata } from "next";
 import { Poppins } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import { MenuBarVisibilityProvider } from "~/app/providers/menu-bar-visibility-provider";
 
 export const metadata: Metadata = {
   title: "Bas Mensinga | Portfolio",
@@ -23,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${poppins.variable}`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <MenuBarVisibilityProvider>
+          <TRPCReactProvider>{children}</TRPCReactProvider>
+        </MenuBarVisibilityProvider>
       </body>
     </html>
   );

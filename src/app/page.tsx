@@ -1,9 +1,6 @@
 import { HydrateClient } from "~/trpc/server";
 import Link from "next/link";
-import { Fog } from "~/app/components/fog";
-import { FogProvider } from "~/app/providers/fog-provider";
 import { MenuBar } from "~/app/components/menu-bar";
-import { Clock, Code } from "lucide-react";
 import { SpotifyPlayer } from "~/app/components/spotify-player";
 import { Card } from "~/app/components/card";
 import { LinkedinIcon } from "~/app/components/icons/linkedin";
@@ -11,6 +8,7 @@ import { ExternalLinkIcon } from "~/app/components/icons/external-link";
 import { Experience, type TExperience } from "~/app/components/experience";
 import { Education, type TEducation } from "~/app/components/education";
 import { Footer } from "~/app/components/footer";
+import { Intro } from "~/app/components/intro";
 
 const experiences: TExperience[] = [
   {
@@ -100,54 +98,7 @@ export default async function Home() {
       <MenuBar />
       <main>
         <section>
-          <FogProvider>
-            <div className={"bg-brand-soft relative flex h-[576px] items-center"}>
-              <div className={"z-20 container mx-auto flex flex-col gap-6"}>
-                <h1
-                  className={
-                    "text-ink flex items-center gap-3 text-4xl font-medium"
-                  }
-                >
-                  Hey, I am Bas.
-                  <span
-                    className={
-                      "outline-brand/10 flex h-16 w-16 -rotate-[6deg] items-center justify-center rounded-lg bg-white outline-2 transition-transform duration-150 hover:rotate-0"
-                    }
-                  >
-                  <span className={"h-15 w-15 rounded-md bg-red-800"}></span>
-                </span>
-                  I am a Software engineer.
-                </h1>
-                <h2
-                  className={
-                    "text-ink-muted flex items-center gap-3 text-2xl font-medium"
-                  }
-                >
-                  I build software
-                  <span
-                    className={
-                      "outline-brand/10 flex h-12 w-12 rotate-12 items-center justify-center rounded-lg bg-white outline-2 transition-transform duration-150 hover:rotate-0"
-                    }
-                  >
-                  <Code className={"text-brand h-8 w-8 stroke-[2.5]"} />
-                </span>
-                  that makes complex things feel simple.
-                </h2>
-                <Link
-                  href={"mailto:hey@basmensinga.nl"}
-                  className={"bg-brand w-fit rounded-full px-4 py-1 text-white!"}
-                >
-                  Let's chat
-                </Link>
-              </div>
-              <Fog />
-              <div
-                className={
-                  "absolute bottom-0 left-0 h-16 w-full bg-linear-to-b from-transparent to-white"
-                }
-              />
-            </div>
-          </FogProvider>
+          <Intro />
         </section>
         <div className={"my-24 flex flex-col gap-12"}>
           <div className={"container mx-auto grid grid-cols-12 gap-12"}>
