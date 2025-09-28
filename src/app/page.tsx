@@ -3,13 +3,14 @@ import Link from "next/link";
 import { Fog } from "~/app/components/fog";
 import { FogProvider } from "~/app/providers/fog-provider";
 import { MenuBar } from "~/app/components/menu-bar";
-import { Code } from "lucide-react";
+import { Clock, Code } from "lucide-react";
 import { SpotifyPlayer } from "~/app/components/spotify-player";
 import { Card } from "~/app/components/card";
 import { LinkedinIcon } from "~/app/components/icons/linkedin";
 import { ExternalLinkIcon } from "~/app/components/icons/external-link";
 import { Experience, type TExperience } from "~/app/components/experience";
 import { Education, type TEducation } from "~/app/components/education";
+import { Footer } from "~/app/components/footer";
 
 const experiences: TExperience[] = [
   {
@@ -302,7 +303,7 @@ export default async function Home() {
           </div>
         </div>
       </main>
-      <footer></footer>
+      <Footer />
     </HydrateClient>
   );
 }
