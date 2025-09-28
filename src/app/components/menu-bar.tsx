@@ -19,10 +19,10 @@ export function MenuBar() {
     <header className={'w-full fixed z-30'}>
       <motion.div
         className={cn(
-          'bg-white transition-all duration-300 m-0 border-b py-4 2xl:mx-auto',
+          'bg-white/80 transition-all duration-300 m-0 py-4 2xl:mx-auto border-border backdrop-blur-2xl',
           isScrolled
-            ? 'max-w-screen-2xl px-4 mt-2 rounded-xl shadow-md shadow-brand/10 border-transparent py-3 mx-2'
-            : 'max-w-[100dvw] border-border'
+            ? 'max-w-screen-lg px-4 mt-2 rounded-xl py-3 mx-2 border'
+            : 'max-w-[100dvw] border-b'
         )}
       >
         <div className={'flex justify-between container mx-auto'}>
