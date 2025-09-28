@@ -19,9 +19,9 @@ export function MenuBar() {
     <header className={'w-full fixed z-30'}>
       <motion.div
         className={cn(
-          'bg-white transition-all duration-300 m-0 border-b py-4 mx-auto',
+          'bg-white transition-all duration-300 m-0 border-b py-4 2xl:mx-auto',
           isScrolled
-            ? 'max-w-screen-2xl px-4 mt-2 rounded-xl drop-shadow-md border-transparent py-3'
+            ? 'max-w-screen-2xl px-4 mt-2 rounded-xl shadow-md shadow-brand/10 border-transparent py-3 mx-2'
             : 'max-w-[100dvw] border-border'
         )}
       >
@@ -32,7 +32,7 @@ export function MenuBar() {
           <div className={'flex gap-2'}>
             <div className={'bg-surface-alt rounded-lg flex gap-2 py-0.5 px-1.5 items-center justify-center'}>
               <Globe className={'size-3.5 text-ink-muted'}/>
-              <span className={'text-ink-muted font-normal text-sm'}>Gouda • Nederland</span>
+              <span className={'text-ink-muted font-normal text-sm'}>Gouda • The Netherlands</span>
             </div>
             <div className={'w-px h-full py-1 flex'}><span className={'bg-divider rounded-full h-full w-px'} /></div>
             <div className={'flex gap-2'}>
