@@ -2,7 +2,7 @@ import { HydrateClient } from "~/trpc/server";
 import Link from "next/link";
 import { MenuBar } from "~/app/components/menu-bar";
 import { SpotifyCard } from "~/app/components/cards/spotify-card";
-import { Card } from "~/app/components/card";
+import { Card } from "~/app/components/cards/card";
 import { LinkedinIcon } from "~/app/components/icons/linkedin";
 import { ExternalLinkIcon } from "~/app/components/icons/external-link";
 import { Experience, type TExperience } from "~/app/components/experience";

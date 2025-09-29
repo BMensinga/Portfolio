@@ -3,7 +3,7 @@
 import { LinkedinIcon } from '~/app/components/icons/linkedin';
 import Link from 'next/link';
 import { ExternalLinkIcon } from '~/app/components/icons/external-link';
-import { Card } from '~/app/components/card';
+import { Card } from '~/app/components/cards/card';
 import { motion } from 'motion/react';
 import { useMemo, useState } from 'react';
 import { cn } from '~/app/libs/utils';

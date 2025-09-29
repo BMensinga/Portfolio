@@ -1,6 +1,6 @@
 'use client'
 
-import { Card } from "~/app/components/card";
+import { Card } from "~/app/components/cards/card";
 import { SkipBackwardIcon } from "~/app/components/icons/music-player/skip-backward";
 import { SkipForwardIcon } from "~/app/components/icons/music-player/skip-forward";
 import { PauseIcon } from "~/app/components/icons/music-player/pause";

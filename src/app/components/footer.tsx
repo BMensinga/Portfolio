@@ -1,7 +1,7 @@
 'use client'
 
 import { FogProvider } from '~/app/providers/fog-provider';
-import { Card } from '~/app/components/card';
+import { Card } from '~/app/components/cards/card';
 import Link from 'next/link';
 import { Clock } from 'lucide-react';
 import { Fog } from '~/app/components/fog';

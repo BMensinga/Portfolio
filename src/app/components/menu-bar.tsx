@@ -20,19 +20,19 @@ export function MenuBar() {
   });
 
   return (
-    <header className={'w-full fixed z-30 pointer-events-none'}>
+    <header className={'w-full fixed z-30 pointer-events-none flex justify-center'}>
       <motion.div
         className={cn(
-          'transition-all duration-300 m-0 py-4 2xl:mx-auto border-border  pointer-events-auto',
+          'transition-all duration-300 m-0 py-4 px-4 2xl:mx-auto border-border pointer-events-auto grow',
           isScrolled
-            ? 'max-w-screen-lg px-4 mt-2 rounded-xl py-3 mx-2 border'
+            ? 'max-w-screen-lg mt-2 rounded-xl py-3 mx-2 border'
             : 'max-w-[100dvw] border-b',
           isIntroInView
             ? 'bg-white/25 backdrop-blur-2xl'
             : 'bg-white'
         )}
       >
-        <div className={'flex justify-between container mx-auto'}>
+        <div className={'flex flex-col sm:flex-row gap-2 justify-between mx-auto'}>
           <Link href={'/'} className={'text-2xl font-medium'}>
             Bas Mensinga
           </Link>
@@ -46,7 +46,7 @@ export function MenuBar() {
               <Globe className={'size-3.5 text-ink-muted'}/>
               <span className={'text-ink-muted font-normal text-sm'}>Gouda • The Netherlands</span>
             </div>
-            <div className={'w-px h-full py-1 flex'}><span className={'bg-divider rounded-full h-full w-px'} /></div>
+            <div className={'w-px py-1 flex'}><span className={'bg-divider rounded-full h-full w-px'} /></div>
             <div className={'flex gap-2'}>
               <div className={cn(
                 'rounded-lg flex gap-2 py-0.5 px-1.5 items-center justify-center transition-all duration-300',
