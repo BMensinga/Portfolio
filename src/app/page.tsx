@@ -1,7 +1,7 @@
 import { HydrateClient } from "~/trpc/server";
 import Link from "next/link";
 import { MenuBar } from "~/app/components/menu-bar";
-import { SpotifyPlayer } from "~/app/components/spotify-player";
+import { SpotifyCard } from "~/app/components/cards/spotify-card";
 import { Card } from "~/app/components/card";
 import { LinkedinIcon } from "~/app/components/icons/linkedin";
 import { ExternalLinkIcon } from "~/app/components/icons/external-link";
@@ -9,6 +9,7 @@ import { Experience, type TExperience } from "~/app/components/experience";
 import { Education, type TEducation } from "~/app/components/education";
 import { Footer } from "~/app/components/footer";
 import { Intro } from "~/app/components/intro";
+import { LinkedinCard } from "~/app/components/cards/linkedin-card";
 
 const experiences: TExperience[] = [
   {
@@ -171,58 +172,10 @@ export default async function Home() {
             </section>
             <div className={"col-span-4 flex flex-col gap-12"}>
               <section>
-                <SpotifyPlayer />
+                <SpotifyCard />
               </section>
               <section>
-                <Card>
-                  <div className={"relative flex flex-col gap-4"}>
-                    <div className={"flex flex-col gap-2"}>
-                      <div className={"flex justify-between gap-4"}>
-                        <div className={"flex gap-2"}>
-                          <div
-                            className={
-                              "flex h-12 w-12 items-center justify-center rounded-full bg-white"
-                            }
-                          >
-                          <span className={"text-ink-muted text-xs"}>
-                            Image
-                          </span>
-                          </div>
-                          <div className={"flex flex-col"}>
-                            <p className={"text-ink text-sm font-medium"}>
-                              Bas Mensinga
-                            </p>
-                            <span
-                              className={"text-ink-muted text-xs font-normal"}
-                            >
-                            @bas-mensinga
-                          </span>
-                          </div>
-                        </div>
-                        <div
-                          className={
-                            "flex h-14 w-14 items-center justify-center rounded-[14px] bg-[#0A66C2]"
-                          }
-                        >
-                          <LinkedinIcon />
-                        </div>
-                      </div>
-                      <p className={"text-sm font-normal"}>
-                        Currently at <Link href={"https://dictu.nl"}>@DICTU</Link>
-                      </p>
-                    </div>
-                    <div className={"relative h-6"}>
-                      <Link
-                        href={"https://www.linkedin.com/in/bas-mensinga"}
-                        className={
-                          "border-border absolute -left-3 flex h-8 w-8 items-center justify-center rounded-full border bg-white"
-                        }
-                      >
-                        <ExternalLinkIcon />
-                      </Link>
-                    </div>
-                  </div>
-                </Card>
+                <LinkedinCard />
               </section>
             </div>
             <section className={"col-span-12 flex flex-col gap-12"}>
