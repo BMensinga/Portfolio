@@ -1,12 +1,13 @@
 'use client'
 
-import { Clock, Cloud, Globe } from "lucide-react";
+import { Cloud, Globe } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { cn } from "~/app/libs/utils";
 import Link from "next/link";
 import { useMenuBarVisibility } from "~/app/providers/menu-bar-visibility-provider";
 import { useState } from "react";
 import { useCurrentTime } from "~/app/hooks/use-current-time";
+import { ClockIcon } from "~/app/components/icons/clock";
 
 export function MenuBar() {
   const time = useCurrentTime();
@@ -57,7 +58,7 @@ export function MenuBar() {
                   ? 'bg-white/50'
                   : 'bg-surface-alt'
               )}>
-                <Clock className={'size-3.5 text-ink-muted'}/>
+                <ClockIcon className={'size-3.5 text-ink-muted'}/>
                 <time className={'flex gap-px items-center justify-center text-ink-muted font-normal text-sm'}>
                   <span className={'tabular-nums'}>{hours}</span>
                   <span className={'time-colon pb-0.5'}>:</span>

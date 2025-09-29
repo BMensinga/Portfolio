@@ -3,11 +3,11 @@
 import { FogProvider } from '~/app/providers/fog-provider';
 import { Card } from '~/app/components/cards/card';
 import Link from 'next/link';
-import { Clock } from 'lucide-react';
 import { Fog } from '~/app/components/fog';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Button } from '~/app/components/button';
 import { useCurrentTime } from '~/app/hooks/use-current-time';
+import { ClockIcon } from "~/app/components/icons/clock";
 
 export function Footer() {
   const time = useCurrentTime();
@@ -38,7 +38,7 @@ export function Footer() {
                   <Link href={'mailto:hey@basmensinga.nl'}>Let's chat</Link>
                 </Button>
                 <div className={'flex gap-2 items-center justify-center'}>
-                  <Clock className={'size-3.5 text-ink-muted'} />
+                  <ClockIcon className={'size-3.5 text-ink-muted'} />
                   <time className={'flex gap-px items-center justify-center text-ink-muted font-normal text-sm'}>
                     <span className={'tabular-nums'}>{hours}</span>
                     <span className={'time-colon pb-0.5'}>:</span>
