@@ -28,7 +28,7 @@ export function LinkedinCard() {
         <div className={'flex flex-col gap-2'}>
           <div className={'flex justify-between gap-4'}>
             <div className={'flex gap-2'}>
-              <div className={'flex h-12 w-12 items-center justify-center rounded-full bg-white transition-colors duration-300'}>
+              <div className={'flex h-12 w-12 items-center justify-center rounded-full bg-white transition-colors duration-150'}>
                 <span className={cn('text-xs transition-colors duration-150', isExpanded ? 'text-brand' : 'text-ink-muted')}>
                   Image
                 </span>
@@ -69,8 +69,8 @@ export function LinkedinCard() {
             <Link
               href={'https://dictu.nl'}
               className={cn(
-                'transition-colors duration-300',
-                isExpanded ? '!text-white underline' : 'text-brand',
+                'transition-colors duration-150 hover:text-brand/90',
+                isExpanded ? 'text-white underline' : 'text-brand',
               )}
             >
               @DICTU

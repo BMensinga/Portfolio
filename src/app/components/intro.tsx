@@ -7,6 +7,7 @@ import { FogProvider } from "~/app/providers/fog-provider";
 import { useEffect, useRef } from "react";
 import { useInView } from "framer-motion";
 import { useMenuBarVisibility } from "~/app/providers/menu-bar-visibility-provider";
+import { Button } from "~/app/components/button";
 
 export function Intro() {
   const ref = useRef(null)
@@ -37,12 +38,9 @@ export function Intro() {
             </span>
             that makes complex things feel simple.
           </h2>
-          <Link
-            href={"mailto:hey@basmensinga.nl"}
-            className={"bg-brand w-fit rounded-full px-4 py-1 text-white!"}
-          >
-            Let's chat
-          </Link>
+          <Button asChild variant={'solid'} size={'md'} className={'rounded-full'}>
+            <Link href={'mailto:hey@basmensinga.nl'}>Let's chat</Link>
+          </Button>
         </div>
         <Fog />
         <div className={'flex flex-col absolute top-0 h-full w-full'}>

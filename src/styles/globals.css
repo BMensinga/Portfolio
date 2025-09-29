@@ -51,10 +51,12 @@
     }
 }
 
-a {
-    @apply text-brand;
+.time-colon {
+    animation: blink 1s steps(2, start) infinite;
 }
 
-a:hover {
-    @apply text-brand/90;
+@keyframes blink {
+    to {
+        visibility: hidden;
+    }
 }

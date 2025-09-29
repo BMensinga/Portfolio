@@ -136,7 +136,7 @@ export default async function Home() {
                   </h4>
                   <p className={"text-ink-muted text-sm font-normal"}>
                     Today, I’m a medior software engineer, currently working at{" "}
-                    <Link href={"https://dictu.nl"} className={"font-medium"}>
+                    <Link href={"https://dictu.nl"} className={"font-medium text-brand hover:text-brand/90"}>
                       DICTU
                     </Link>
                     . On the side, I like to experiment with new libraries, tools,

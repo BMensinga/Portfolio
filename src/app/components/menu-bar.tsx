@@ -6,9 +6,12 @@ import { cn } from "~/app/libs/utils";
 import Link from "next/link";
 import { useMenuBarVisibility } from "~/app/providers/menu-bar-visibility-provider";
 import { useState } from "react";
+import { useCurrentTime } from "~/app/hooks/use-current-time";
 
 export function MenuBar() {
-  const time = new Date();
+  const time = useCurrentTime();
+  const hours = time.getHours().toString().padStart(2, '0');
+  const minutes = time.getMinutes().toString().padStart(2, '0');
 
   const { scrollYProgress } = useScroll();
   const { isIntroInView } = useMenuBarVisibility();
@@ -33,7 +36,7 @@ export function MenuBar() {
         )}
       >
         <div className={'flex flex-col sm:flex-row gap-2 justify-between mx-auto'}>
-          <Link href={'/'} className={'text-2xl font-medium'}>
+          <Link href={'/'} className={'text-2xl font-medium text-brand hover:text-brand/90'}>
             Bas Mensinga
           </Link>
           <div className={'flex gap-2'}>
@@ -55,7 +58,11 @@ export function MenuBar() {
                   : 'bg-surface-alt'
               )}>
                 <Clock className={'size-3.5 text-ink-muted'}/>
-                <span className={'text-ink-muted font-normal text-sm'}>{ time.toLocaleTimeString('nl-NL', {hour: '2-digit', minute: '2-digit'}) }</span>
+                <time className={'flex gap-px items-center justify-center text-ink-muted font-normal text-sm'}>
+                  <span className={'tabular-nums'}>{hours}</span>
+                  <span className={'time-colon pb-0.5'}>:</span>
+                  <span className={'tabular-nums'}>{minutes}</span>
+                </time>
               </div>
               <div className={cn(
                 'rounded-lg flex gap-2 py-0.5 px-1.5 items-center justify-center transition-all duration-300',

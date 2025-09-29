@@ -2,8 +2,9 @@
 
 import Image from 'next/image';
 import { ChevronsDownUpIcon, ChevronsUpDownIcon } from 'lucide-react';
-import { cn, formatDate, formatDuration } from "~/app/libs/utils";
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { cn, formatDate, formatDuration } from '~/app/libs/utils';
+import { useEffect, useId, useMemo, useRef, useState } from 'react';
+import { Button } from '~/app/components/button';
 
 export type TExperienceItem = {
   title: string;
@@ -29,6 +30,7 @@ export function Experience({ experience }: ExperienceProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [descriptionHeights, setDescriptionHeights] = useState<number[]>([]);
   const descriptionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const detailsId = useId();
   const hasDescriptions = useMemo(
     () => experience.experienceItems.some((item) => Boolean(item.description)),
     [experience.experienceItems],
@@ -69,8 +71,13 @@ export function Experience({ experience }: ExperienceProps) {
           </h4>
         </div>
         {hasDescriptions && (
-          <button
-            type={'button'}
+          <Button
+            variant={'ghost'}
+            size={'icon'}
+            aria-expanded={isExpanded}
+            aria-controls={detailsId}
+            aria-label={isExpanded ? 'Toon minder' : 'Toon meer'}
+            className={'px-2'}
             onClick={() => setIsExpanded((expanded) => !expanded)}
           >
             {isExpanded ? (
@@ -78,10 +85,10 @@ export function Experience({ experience }: ExperienceProps) {
             ) : (
               <ChevronsUpDownIcon className={'text-ink-muted size-4 stroke-3'} />
             )}
-          </button>
+          </Button>
         )}
       </div>
-      <div className={'flex flex-col'}>
+      <div className={'flex flex-col'} id={detailsId}>
         {experience.experienceItems.map((item, index) => {
           const isLast = index === experience.experienceItems.length - 1;
           const start = formatDate(item.startDate);
@@ -124,7 +131,9 @@ export function Experience({ experience }: ExperienceProps) {
                 </div>
                 {item.description && (
                   <div
-                    ref={(node) => {descriptionRefs.current[index] = node}}
+                    ref={(node) => {
+                      descriptionRefs.current[index] = node;
+                    }}
                     className={cn(
                       'overflow-hidden transition-[max-height,opacity] duration-150 ease-in-out',
                       isExpanded ? 'opacity-100' : 'opacity-0',

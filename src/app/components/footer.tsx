@@ -6,15 +6,21 @@ import Link from 'next/link';
 import { Clock } from 'lucide-react';
 import { Fog } from '~/app/components/fog';
 import { motion, useScroll, useTransform } from 'motion/react';
+import { Button } from '~/app/components/button';
+import { useCurrentTime } from '~/app/hooks/use-current-time';
 
 export function Footer() {
-  const time = new Date();
+  const time = useCurrentTime();
+  const hours = time.getHours().toString().padStart(2, '0');
+  const minutes = time.getMinutes().toString().padStart(2, '0');
+
   const { scrollYProgress } = useScroll();
   const letterSpacing = useTransform(
     scrollYProgress,
     [0, 1],
     ['0.6em', '0.05em']
   );
+
 
   return (
     <footer>
@@ -23,15 +29,21 @@ export function Footer() {
           <div className={'z-20 container mx-auto flex flex-col gap-6 mb-6'}>
             <Card className={'pb-0'}>
               <div className={'flex justify-between p-12'}>
-                <Link
-                  href={'mailto:hey@basmensinga.nl'}
-                  className={'bg-brand w-fit rounded-full px-4 py-1 text-white!'}
+                <Button
+                  asChild
+                  variant={'solid'}
+                  size={'md'}
+                  className={'rounded-full shadow-lg shadow-brand/20'}
                 >
-                  Let's chat
-                </Link>
+                  <Link href={'mailto:hey@basmensinga.nl'}>Let's chat</Link>
+                </Button>
                 <div className={'flex gap-2 items-center justify-center'}>
-                  <Clock className={'size-3.5 text-ink-muted'}/>
-                  <span className={'text-ink-muted font-normal text-sm'}>{ time.toLocaleTimeString('nl-NL', {hour: '2-digit', minute: '2-digit'}) }</span>
+                  <Clock className={'size-3.5 text-ink-muted'} />
+                  <time className={'flex gap-px items-center justify-center text-ink-muted font-normal text-sm'}>
+                    <span className={'tabular-nums'}>{hours}</span>
+                    <span className={'time-colon pb-0.5'}>:</span>
+                    <span className={'tabular-nums'}>{minutes}</span>
+                  </time>
                 </div>
               </div>
               <div className={'flex justify-center overflow-hidden relative h-20'}>
@@ -51,4 +63,3 @@ export function Footer() {
     </footer>
   )
 }
-
