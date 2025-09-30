@@ -33,7 +33,7 @@ export function Footer() {
                   asChild
                   variant={'solid'}
                   size={'md'}
-                  className={'rounded-full shadow-lg shadow-brand/20'}
+                  className={'rounded-full'}
                 >
                   <Link href={'mailto:hey@basmensinga.nl'}>Let's chat</Link>
                 </Button>
