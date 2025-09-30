@@ -27,7 +27,7 @@ export function Footer() {
       <FogProvider>
         <div className={'bg-brand-soft relative flex flex-col items-center'}>
           <div className={'z-20 container mx-auto flex flex-col gap-6 mb-6'}>
-            <Card className={'pb-0 mx-2 sm:mx-0'}>
+            <Card className={'!pb-0 mx-2 sm:mx-0'}>
               <div className={'flex justify-between p-4 lg:p-12 pb-0 md:pb-4'}>
                 <Button
                   asChild
