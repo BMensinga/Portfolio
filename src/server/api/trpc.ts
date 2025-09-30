@@ -6,9 +6,10 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
+import { env } from "~/env";
 
 /**
  * 1. CONTEXT
@@ -93,11 +94,25 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
   return result;
 });
 
+const baseProcedure = t.procedure.use(timingMiddleware);
+
+const authMiddleware = t.middleware(({ ctx, next }) => {
+  const authHeader = ctx.headers.get('authorization');
+  const token = authHeader?.startsWith('Bearer ')
+    ? authHeader.slice('Bearer '.length).trim()
+    : null;
+
+  if (!token || token !== env.TRPC_AUTH_TOKEN) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+
+  return next();
+});
+
 /**
- * Public (unauthenticated) procedure
+ * Public (authorized) procedure
  *
- * This is the base piece you use to build new queries and mutations on your tRPC API. It does not
- * guarantee that a user querying is authorized, but you can still access user session data if they
- * are logged in.
+ * This is the base piece you use to build new queries and mutations on your tRPC API. It does
+ * guarantee that a user querying is authorized.
  */
-export const publicProcedure = t.procedure.use(timingMiddleware);
+export const authorizedProcedure = baseProcedure.use(authMiddleware);

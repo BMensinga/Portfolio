@@ -1,6 +1,6 @@
 'use client'
 
-import { Cloud, Globe } from "lucide-react";
+import { Globe } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import { cn } from "~/app/libs/utils";
 import Link from "next/link";
@@ -8,8 +8,14 @@ import { useMenuBarVisibility } from "~/app/providers/menu-bar-visibility-provid
 import { useState } from "react";
 import { useCurrentTime } from "~/app/hooks/use-current-time";
 import { ClockIcon } from "~/app/components/icons/clock";
+import { WeatherIcon } from "~/app/components/icons/weather";
+import type { WeatherPayload } from "~/server/api/routers/weather";
 
-export function MenuBar() {
+type MenuBarProps = {
+  weather?: WeatherPayload | null;
+};
+
+export function MenuBar({ weather }: MenuBarProps) {
   const time = useCurrentTime();
   const hours = time.getHours().toString().padStart(2, '0');
   const minutes = time.getMinutes().toString().padStart(2, '0');
@@ -71,8 +77,12 @@ export function MenuBar() {
                   ? 'bg-white/50'
                   : 'bg-surface-alt'
               )}>
-                <Cloud className={'size-3.5 text-ink-muted'}/>
-                <span className={'text-ink-muted font-normal text-sm'}>20°C</span>
+                <WeatherIcon kind={weather?.kind ?? 'clear'} className={'size-3.5 text-ink-muted'} />
+                <div className={'flex flex-col leading-none'}>
+                  <span className={'text-ink-muted font-normal text-sm tabular-nums'}>
+                    {weather ? `${Math.round(weather.temperature ?? 0)}°C` : '—'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>

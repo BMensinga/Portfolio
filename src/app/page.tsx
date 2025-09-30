@@ -3,13 +3,14 @@ import Link from "next/link";
 import { MenuBar } from "~/app/components/menu-bar";
 import { SpotifyCard } from "~/app/components/cards/spotify-card";
 import { Card } from "~/app/components/cards/card";
-import { LinkedinIcon } from "~/app/components/icons/linkedin";
-import { ExternalLinkIcon } from "~/app/components/icons/external-link";
 import { Experience, type TExperience } from "~/app/components/experience";
 import { Education, type TEducation } from "~/app/components/education";
 import { Footer } from "~/app/components/footer";
 import { Intro } from "~/app/components/intro";
 import { LinkedinCard } from "~/app/components/cards/linkedin-card";
+import { createCaller } from "~/server/api/root";
+import { env } from "~/env";
+import type { WeatherPayload } from "~/server/api/routers/weather";
 
 const experiences: TExperience[] = [
   {
@@ -94,9 +95,27 @@ const education: TEducation[] = [
 ]
 
 export default async function Home() {
+  const caller = createCaller({
+    headers: new Headers([
+      ['Authorization', `Bearer ${env.TRPC_AUTH_TOKEN}`],
+    ]),
+  });
+
+  let weather: WeatherPayload | null = null;
+
+  try {
+    weather = await caller.weather.current({
+      latitude: 52.0182,
+      longitude: 4.687,
+      units: 'metric',
+    });
+  } catch (error) {
+    console.error('[weather] failed to load weather data', error);
+  }
+
   return (
     <HydrateClient>
-      <MenuBar />
+      <MenuBar weather={weather} />
       <main>
         <section>
           <Intro />
