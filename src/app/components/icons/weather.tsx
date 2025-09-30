@@ -33,7 +33,7 @@ type WeatherIconProps = ComponentProps<typeof SunIcon> & {
 const iconMap: Record<WeatherKind, typeof SunIcon> = {
   clear: SunIcon,
   'mostly-clear': CloudSunIcon,
-  'partly-cloudy': CloudIcon,
+  'partly-cloudy': CloudSunIcon,
   overcast: CloudyIcon,
   fog: CloudFogIcon,
   drizzle: CloudDrizzleIcon,

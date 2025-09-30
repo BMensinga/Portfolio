@@ -27,8 +27,8 @@ export function Footer() {
       <FogProvider>
         <div className={'bg-brand-soft relative flex flex-col items-center'}>
           <div className={'z-20 container mx-auto flex flex-col gap-6 mb-6'}>
-            <Card className={'pb-0'}>
-              <div className={'flex justify-between p-12'}>
+            <Card className={'pb-0 mx-2 sm:mx-0'}>
+              <div className={'flex justify-between p-4 lg:p-12 pb-0 md:pb-4'}>
                 <Button
                   asChild
                   variant={'solid'}
@@ -46,9 +46,9 @@ export function Footer() {
                   </time>
                 </div>
               </div>
-              <div className={'flex justify-center overflow-hidden relative h-20'}>
+              <div className={'flex justify-center overflow-hidden relative h-12 sm:h-16 md:h-20'}>
                 <motion.h2
-                  className={'bg-gradient-to-b from-brand to-brand/0 text-transparent text-[128px] font-medium z-30 bg-clip-text absolute -top-9'}
+                  className={'bg-gradient-to-b from-brand to-brand/0 text-transparent text-5xl top-4 sm:text-6xl sm:top-6 md:text-7xl md:top-8 lg:text-[96px] lg:leading-normal lg:-top-2 xl:text-[128px] xl:leading-normal xl:-top-9 font-medium z-30 bg-clip-text absolute'}
                   style={{ letterSpacing }}
                 >
                   Bas Mensinga

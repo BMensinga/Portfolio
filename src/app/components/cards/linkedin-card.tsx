@@ -16,7 +16,7 @@ export function LinkedinCard() {
   );
 
   return (
-    <Card className={'relative overflow-hidden'}>
+    <Card className={'relative overflow-hidden h-full lg:h-fit'}>
       <motion.div
         className={'pointer-events-none absolute inset-0 z-0 rounded-2xl bg-[#0A66C2]'}
         initial={false}
@@ -24,7 +24,7 @@ export function LinkedinCard() {
         transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
         aria-hidden={'true'}
       />
-      <div className={'z-10 flex flex-col gap-4 transition-colors duration-150'}>
+      <div className={'z-10 flex flex-col gap-4 transition-colors duration-150 h-full'}>
         <div className={'flex flex-col gap-2'}>
           <div className={'flex justify-between gap-4'}>
             <div className={'flex gap-2'}>
@@ -77,10 +77,10 @@ export function LinkedinCard() {
             </Link>
           </p>
         </div>
-        <div className={'relative h-6'}>
+        <div className={'relative h-6 mt-auto'}>
           <Link
             href={'https://www.linkedin.com/in/bas-mensinga'}
-            className={'border-border absolute -left-3 flex h-8 w-8 items-center justify-center rounded-full border bg-white transition-colors duration-150'}
+            className={'border-border absolute -left-2 sm:-left-3 flex h-8 w-8 items-center justify-center rounded-full border bg-white transition-colors duration-150'}
             onMouseEnter={() => setIsExpanded(true)}
             onFocus={() => setIsExpanded(true)}
             onMouseLeave={() => setIsExpanded(false)}

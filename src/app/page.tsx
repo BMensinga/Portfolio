@@ -120,9 +120,9 @@ export default async function Home() {
         <section>
           <Intro />
         </section>
-        <div className={"my-24 flex flex-col gap-12"}>
-          <div className={"container mx-auto grid grid-cols-12 gap-12"}>
-            <section className={"col-span-8"}>
+        <div className={"my-24 mx-2 sm:mx-0 flex flex-col gap-12"}>
+          <div className={"container mx-auto grid grid-cols-3 gap-12"}>
+            <section className={"col-span-3 lg:col-span-2"}>
               <Card>
                 <h3 className={"text-ink text-xl font-medium"}>About me</h3>
                 <div className={"flex flex-col gap-2"}>
@@ -189,15 +189,15 @@ export default async function Home() {
                 </div>
               </Card>
             </section>
-            <div className={"col-span-4 flex flex-col gap-12"}>
-              <section>
+            <div className={"col-span-3 lg:col-span-1 flex flex-col sm:flex-row lg:flex-col gap-6 sm:gap-12"}>
+              <section className={'w-full h-full'}>
                 <SpotifyCard />
               </section>
-              <section>
+              <section className={'w-full h-full'}>
                 <LinkedinCard />
               </section>
             </div>
-            <section className={"col-span-12 flex flex-col gap-12"}>
+            <section className={"col-span-3 flex flex-col gap-12"}>
               <Card>
                 <div className={'flex flex-col gap-6'}>
                   <h3 className={"text-ink text-xl font-medium"}>Experience</h3>

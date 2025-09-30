@@ -19,9 +19,9 @@ export function SpotifyCard() {
 
 
   return (
-    <Card className={'relative'}>
+    <Card className={'relative h-full'}>
       <motion.div
-        className={'pointer-events-none absolute inset-0 z-0 rounded-2xl bg-black'}
+        className={'pointer-events-none absolute inset-0 z-0 rounded-2xl bg-[#20D760]'}
         initial={false}
         animate={{ clipPath }}
         transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
@@ -34,12 +34,12 @@ export function SpotifyCard() {
 
             </div>
             <div className={'flex flex-col'}>
-              <p className={cn('text-sm font-semibold',
+              <p className={cn('text-sm font-semibold text-ink',
                 isExpanded ? 'text-white' : 'text-ink'
               )}>
                 Senza Fine
               </p>
-              <span className={cn('text-sm font-normal',
+              <span className={cn('text-sm font-normal text-ink-muted',
                 isExpanded ? 'text-white/80' : 'text-ink-muted'
               )}>
                 ALOTT
