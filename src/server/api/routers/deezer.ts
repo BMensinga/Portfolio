@@ -7,6 +7,9 @@ import { z } from 'zod';
 import { authorizedProcedure, createTRPCRouter } from '~/server/api/trpc';
 import { env } from '~/env';
 
+const SPOTIFY_API_BASE = 'https://api.spotify.com/v1';
+const DEEZER_API_BASE = 'https://api.deezer.com';
+
 const playlistInputSchema = z.object({
   spotifyPlaylistId: z.string().min(1).optional(),
 });
@@ -52,6 +55,79 @@ type SpotifyPlaylistData = {
   tracks: SpotifyTrack[];
 };
 
+const buildDeezerSearchKey = (track: SpotifyTrack) =>
+  JSON.stringify({ name: track.name, artists: track.artists });
+
+const matchSpotifyTracksWithDeezer = (tracks: SpotifyTrack[]) =>
+  Effect.forEach(
+    tracks,
+    (track) => deezerTrackSearchCache.get(buildDeezerSearchKey(track)),
+    { concurrency: 6 },
+  );
+
+const resolveSpotifyUrl = (url: string) =>
+  url.startsWith('http') ? url : `${SPOTIFY_API_BASE}${url}`;
+
+const fetchSpotifyJson = <T>(
+  url: string,
+  token: string,
+  options: { label: string; notFoundMessage?: string },
+) =>
+  Effect.gen(function* (_) {
+    const response = yield* _(
+      Effect.tryPromise({
+        try: () =>
+          fetch(resolveSpotifyUrl(url), {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }),
+        catch: (cause) =>
+          new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Failed to reach ${options.label}`,
+            cause,
+          }),
+      }),
+    );
+
+    if (response.status === 404 && options.notFoundMessage) {
+      return yield* _(
+        Effect.fail(
+          new TRPCError({
+            code: 'NOT_FOUND',
+            message: options.notFoundMessage,
+          }),
+        ),
+      );
+    }
+
+    if (!response.ok) {
+      return yield* _(
+        Effect.fail(
+          new TRPCError({
+            code: 'BAD_REQUEST',
+            message: `${options.label} failed with status ${response.status}`,
+          }),
+        ),
+      );
+    }
+
+    const json = (yield* _(
+      Effect.tryPromise({
+        try: () => response.json() as Promise<T>,
+        catch: (cause) =>
+          new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: `Failed to parse ${options.label}`,
+            cause,
+          }),
+      }),
+    ));
+
+    return json;
+  });
+
 const spotifyDerivedPlaylistCache = Effect.runSync(
   Cache.make<string, DeezerPlaylistPayload, TRPCError>({
     capacity: 4,
@@ -80,7 +156,7 @@ export const deezerRouter = createTRPCRouter({
   playlist: authorizedProcedure
     .input(playlistInputSchema.optional())
     .query(({ input }) => {
-      const spotifyPlaylistId = input?.spotifyPlaylistId?.trim() || env.SPOTIFY_PLAYLIST_ID?.trim();
+      const spotifyPlaylistId = input?.spotifyPlaylistId?.trim() ?? env.SPOTIFY_PLAYLIST_ID?.trim();
 
       if (!spotifyPlaylistId) {
         throw new TRPCError({
@@ -96,13 +172,7 @@ export const deezerRouter = createTRPCRouter({
 const derivePlaylistFromSpotify = (playlistId: string) =>
   Effect.gen(function* (_) {
     const spotifyData = yield* _(fetchSpotifyPlaylistData(playlistId));
-
-  const matchedTracks: Array<DeezerTrackPayload | null> = [];
-  for (const track of spotifyData.tracks) {
-    const cacheKey = JSON.stringify({ name: track.name, artists: track.artists });
-    const match = yield* _(deezerTrackSearchCache.get(cacheKey));
-    matchedTracks.push(match);
-  }
+    const matchedTracks = yield* _(matchSpotifyTracksWithDeezer(spotifyData.tracks));
 
     const tracks = spotifyData.tracks.map((track, index) => {
       const matched = matchedTracks[index];
@@ -213,57 +283,16 @@ const fetchSpotifyAccessToken = () =>
 const fetchSpotifyPlaylistData = (playlistId: string): Effect.Effect<SpotifyPlaylistData, TRPCError> =>
   Effect.gen(function* (_) {
     const token = yield* _(spotifyTokenCache.get('token'));
-
-    const playlistResponse = yield* _(
-      Effect.tryPromise({
-        try: () =>
-          fetch(`https://api.spotify.com/v1/playlists/${encodeURIComponent(playlistId)}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }),
-        catch: (cause) =>
-          new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to reach Spotify playlist endpoint',
-            cause,
-          }),
-      }),
+    const playlistJson = yield* _(
+      fetchSpotifyJson<SpotifyPlaylistResponse>(
+        `/playlists/${encodeURIComponent(playlistId)}`,
+        token,
+        {
+          label: 'Spotify playlist endpoint',
+          notFoundMessage: 'Spotify playlist not found',
+        },
+      ),
     );
-
-    if (playlistResponse.status === 404) {
-      return yield* _(
-        Effect.fail(
-          new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'Spotify playlist not found',
-          }),
-        ),
-      );
-    }
-
-    if (!playlistResponse.ok) {
-      return yield* _(
-        Effect.fail(
-          new TRPCError({
-            code: 'BAD_REQUEST',
-            message: `Spotify playlist request failed with status ${playlistResponse.status}`,
-          }),
-        ),
-      );
-    }
-
-    const playlistJson = (yield* _(
-      Effect.tryPromise({
-        try: () => playlistResponse.json(),
-        catch: (cause) =>
-          new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to parse Spotify playlist response',
-            cause,
-          }),
-      }),
-    )) as SpotifyPlaylistResponse;
 
     if (!playlistJson.id || !playlistJson.name) {
       return yield* _(
@@ -279,52 +308,8 @@ const fetchSpotifyPlaylistData = (playlistId: string): Effect.Effect<SpotifyPlay
     const tracks: SpotifyTrack[] = [];
     tracks.push(...extractSpotifyTracks(playlistJson.tracks?.items ?? []));
 
-    let nextUrl = playlistJson.tracks?.next ?? null;
-    while (nextUrl) {
-      const pageUrl = nextUrl;
-      const pageResponse = yield* _(
-        Effect.tryPromise({
-          try: () =>
-            fetch(pageUrl, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }),
-          catch: (cause) =>
-            new TRPCError({
-              code: 'INTERNAL_SERVER_ERROR',
-              message: 'Failed to reach Spotify playlist page',
-              cause,
-            }),
-        }),
-      );
-
-      if (!pageResponse.ok) {
-        return yield* _(
-          Effect.fail(
-            new TRPCError({
-              code: 'BAD_REQUEST',
-              message: `Spotify playlist page request failed with status ${pageResponse.status}`,
-            }),
-          ),
-        );
-      }
-
-      const pageJson = (yield* _(
-        Effect.tryPromise({
-          try: () => pageResponse.json(),
-          catch: (cause) =>
-            new TRPCError({
-              code: 'INTERNAL_SERVER_ERROR',
-              message: 'Failed to parse Spotify playlist page',
-              cause,
-            }),
-        }),
-      )) as SpotifyPlaylistTracksPage;
-
-      tracks.push(...extractSpotifyTracks(pageJson.items ?? []));
-      nextUrl = pageJson.next ?? null;
-    }
+    const additionalTracks = yield* _(collectSpotifyTrackPages(playlistJson.tracks?.next ?? null, token));
+    tracks.push(...additionalTracks);
 
     const imageUrl = playlistJson.images?.[0]?.url ?? null;
 
@@ -339,6 +324,29 @@ const fetchSpotifyPlaylistData = (playlistId: string): Effect.Effect<SpotifyPlay
       },
       tracks,
     } satisfies SpotifyPlaylistData;
+  });
+
+const collectSpotifyTrackPages = (nextUrl: string | null, token: string) =>
+  Effect.gen(function* (_) {
+    if (!nextUrl) {
+      return [] as SpotifyTrack[];
+    }
+
+    const tracks: SpotifyTrack[] = [];
+    let cursor: string | null = nextUrl;
+
+    while (cursor) {
+      const pageJson: SpotifyPlaylistTracksPage = yield* _(
+        fetchSpotifyJson<SpotifyPlaylistTracksPage>(cursor, token, {
+          label: 'Spotify playlist page',
+        }),
+      );
+
+      tracks.push(...extractSpotifyTracks(pageJson.items ?? []));
+      cursor = pageJson.next ?? null;
+    }
+
+    return tracks;
   });
 
 const extractSpotifyTracks = (items: SpotifyPlaylistTrackItem[]): SpotifyTrack[] =>
@@ -383,7 +391,7 @@ const lookupDeezerTrack = ({ name, artists }: DeezerTrackSearchKey) =>
     const response = yield* _(
       Effect.tryPromise({
         try: () =>
-          fetch(`https://api.deezer.com/search?q=${encodeURIComponent(query)}&limit=5`),
+          fetch(`${DEEZER_API_BASE}/search?q=${encodeURIComponent(query)}&limit=5`),
         catch: (cause) =>
           new TRPCError({
             code: 'INTERNAL_SERVER_ERROR',
@@ -452,10 +460,10 @@ const lookupDeezerTrack = ({ name, artists }: DeezerTrackSearchKey) =>
       previewUrl: chosen.preview ?? null,
       durationMs: chosen.duration != null ? chosen.duration * 1000 : null,
       imageUrl:
-        chosen.album?.cover_xl ||
-        chosen.album?.cover_big ||
-        chosen.album?.cover_medium ||
-        chosen.album?.cover ||
+        chosen.album?.cover_xl ??
+        chosen.album?.cover_big ??
+        chosen.album?.cover_medium ??
+        chosen.album?.cover ??
         null,
     } satisfies DeezerTrackPayload;
   });

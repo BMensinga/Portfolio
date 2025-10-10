@@ -4,6 +4,8 @@ import { Cache, Duration, Effect } from 'effect';
 import { createTRPCRouter, authorizedProcedure } from '~/server/api/trpc';
 import { TRPCError } from '@trpc/server';
 
+const OPEN_METEO_BASE_URL = 'https://api.open-meteo.com/v1/forecast';
+
 const weatherInputSchema = z.object({
   latitude: z.number().min(-90).max(90),
   longitude: z.number().min(-180).max(180),
@@ -13,12 +15,24 @@ const weatherInputSchema = z.object({
 
 type WeatherInput = z.infer<typeof weatherInputSchema>;
 
+type WeatherKind =
+  | 'clear'
+  | 'mostly-clear'
+  | 'partly-cloudy'
+  | 'overcast'
+  | 'fog'
+  | 'drizzle'
+  | 'rain'
+  | 'freezing-rain'
+  | 'snow'
+  | 'thunderstorm';
+
 export type WeatherPayload = {
   temperature: number | null;
   weatherCode: number | null;
   observedAt: string | null;
   units: WeatherInput['units'];
-  kind: ReturnType<typeof mapWeatherCode>;
+  kind: WeatherKind;
 };
 
 const unitMapping = {
@@ -67,65 +81,63 @@ export const weatherRouter = createTRPCRouter({
   }),
 });
 
+const WEATHER_KIND_BY_CODE: Record<number, WeatherKind> = {
+  0: 'clear',
+  1: 'mostly-clear',
+  2: 'partly-cloudy',
+  3: 'overcast',
+  45: 'fog',
+  48: 'fog',
+  51: 'drizzle',
+  53: 'drizzle',
+  55: 'drizzle',
+  56: 'drizzle',
+  57: 'drizzle',
+  61: 'rain',
+  63: 'rain',
+  65: 'rain',
+  66: 'freezing-rain',
+  67: 'freezing-rain',
+  71: 'snow',
+  73: 'snow',
+  75: 'snow',
+  77: 'snow',
+  80: 'rain',
+  81: 'rain',
+  82: 'rain',
+  85: 'snow',
+  86: 'snow',
+  95: 'thunderstorm',
+  96: 'thunderstorm',
+  99: 'thunderstorm',
+};
+
+type OpenMeteoResponse = {
+  current_weather?: {
+    temperature?: number;
+    weathercode?: number;
+    time?: string;
+  } | null;
+};
+
+const buildWeatherUrl = (input: WeatherInput) => {
+  const url = new URL(OPEN_METEO_BASE_URL);
+  url.search = new URLSearchParams({
+    latitude: input.latitude.toString(),
+    longitude: input.longitude.toString(),
+    current_weather: 'true',
+    timezone: input.timezone,
+    ...unitMapping[input.units],
+  }).toString();
+  return url.toString();
+};
+
 const fetchWeather = (input: WeatherInput) =>
   Effect.gen(function* (_) {
-    const params = new URLSearchParams({
-      latitude: input.latitude.toString(),
-      longitude: input.longitude.toString(),
-      current_weather: 'true',
-      timezone: input.timezone,
-      ...unitMapping[input.units],
-    });
+    const payload = yield* _(requestCurrentWeather(input));
 
-    const response = yield* _(
-      Effect.tryPromise({
-        try: () => fetch(`https://api.open-meteo.com/v1/forecast?${params.toString()}`),
-        catch: (cause) =>
-          new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to reach Open-Meteo',
-            cause,
-          }),
-      }),
-    );
-
-    if (!response.ok) {
-      yield* _(
-        Effect.fail(
-          new TRPCError({
-            code: 'BAD_REQUEST',
-            message: `Open-Meteo responded with status ${response.status}`,
-          }),
-        ),
-      );
-    }
-
-    const json = (yield* _(
-      Effect.tryPromise({
-        try: () => response.json() as Promise<{
-          current_weather?: {
-            temperature?: number;
-            weathercode?: number;
-            time?: string;
-          };
-        }>,
-        catch: (cause) =>
-          new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to parse weather response',
-            cause,
-          }),
-      }),
-    )) as {
-      current_weather?: {
-        temperature?: number;
-        weathercode?: number;
-        time?: string;
-      };
-    };
-
-    if (!json.current_weather) {
-      yield* _(
+    if (!payload.current_weather) {
+      return yield* _(
         Effect.fail(
           new TRPCError({
             code: 'NOT_FOUND',
@@ -137,33 +149,62 @@ const fetchWeather = (input: WeatherInput) =>
 
     const {
       temperature = null,
-      weathercode = null,
+      weathercode: weatherCode = null,
       time: observedAt = null,
-    } = json.current_weather!;
+    } = payload.current_weather;
 
     return {
       temperature,
-      weatherCode: weathercode,
+      weatherCode,
       observedAt,
       units: input.units,
-      kind: mapWeatherCode(weathercode ?? null),
+      kind: mapWeatherCode(weatherCode),
     } satisfies WeatherPayload;
   });
 
-function mapWeatherCode(code: number | null) {
-  if (code === null) {
-    return 'clear' as const;
+const requestCurrentWeather = (input: WeatherInput) =>
+  Effect.gen(function* (_) {
+    const response = yield* _(
+      Effect.tryPromise({
+        try: () => fetch(buildWeatherUrl(input)),
+        catch: (cause) =>
+          new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to reach Open-Meteo',
+            cause,
+          }),
+      }),
+    );
+
+    if (!response.ok) {
+      return yield* _(
+        Effect.fail(
+          new TRPCError({
+            code: 'BAD_REQUEST',
+            message: `Open-Meteo responded with status ${response.status}`,
+          }),
+        ),
+      );
+    }
+
+    return (
+      yield* _(
+      Effect.tryPromise({
+        try: () => response.json() as Promise<OpenMeteoResponse>,
+        catch: (cause) =>
+          new TRPCError({
+            code: 'INTERNAL_SERVER_ERROR',
+            message: 'Failed to parse weather response',
+            cause,
+          }),
+      }),
+    ));
+  });
+
+const mapWeatherCode = (code: number | null): WeatherKind => {
+  if (code == null) {
+    return 'clear';
   }
 
-  if (code === 0) return 'clear' as const;
-  if (code === 1) return 'mostly-clear' as const;
-  if (code === 2) return 'partly-cloudy' as const;
-  if (code === 3) return 'overcast' as const;
-  if (code === 45 || code === 48) return 'fog' as const;
-  if ([51, 53, 55, 56, 57].includes(code)) return 'drizzle' as const;
-  if ([61, 63, 65, 80, 81, 82].includes(code)) return 'rain' as const;
-  if (code === 66 || code === 67) return 'freezing-rain' as const;
-  if ([71, 73, 75, 77, 85, 86].includes(code)) return 'snow' as const;
-  if ([95, 96, 99].includes(code)) return 'thunderstorm' as const;
-  return 'clear' as const;
-}
+  return WEATHER_KIND_BY_CODE[code] ?? 'clear';
+};
