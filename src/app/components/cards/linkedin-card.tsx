@@ -7,6 +7,7 @@ import { Card } from '~/app/components/cards/card';
 import { motion } from 'motion/react';
 import { useMemo, useState } from 'react';
 import { cn } from '~/app/libs/utils';
+import Image from "next/image";
 
 export function LinkedinCard() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -28,11 +29,13 @@ export function LinkedinCard() {
         <div className={'flex flex-col gap-2'}>
           <div className={'flex justify-between gap-4'}>
             <div className={'flex gap-2'}>
-              <div className={'flex h-12 w-12 items-center justify-center rounded-full bg-white transition-colors duration-150'}>
-                <span className={cn('text-xs transition-colors duration-150', isExpanded ? 'text-brand' : 'text-ink-muted')}>
-                  Image
-                </span>
-              </div>
+              <Image
+                src={'/images/profile-pic.webp'}
+                width={128}
+                height={128}
+                alt={'Profile picture of Bas Mensinga'}
+                className={"flex h-12 w-12 items-center justify-center rounded-full"}
+              />
               <div className={'flex flex-col'}>
                 <p className={cn('text-sm font-medium', isExpanded ? 'text-white' : 'text-ink')}>
                   Bas Mensinga

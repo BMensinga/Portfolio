@@ -8,6 +8,7 @@ import { useEffect, useRef } from "react";
 import { useInView } from "framer-motion";
 import { useMenuBarVisibility } from "~/app/providers/menu-bar-visibility-provider";
 import { Button } from "~/app/components/button";
+import Image from "next/image";
 
 export function Intro() {
   const ref = useRef(null)
@@ -25,7 +26,13 @@ export function Intro() {
           <h1 className={"text-ink flex items-center gap-3 text-4xl font-medium"}>
             Hey, I am Bas.
             <span className={"outline-brand/10 flex h-16 w-16 -rotate-[6deg] items-center justify-center rounded-lg bg-white outline-2 transition-transform duration-150 hover:rotate-0"}>
-              <span className={"h-15 w-15 rounded-md bg-red-800"}></span>
+              <Image
+                src={'/images/profile-pic.webp'}
+                width={128}
+                height={128}
+                alt={'Profile picture of Bas Mensinga'}
+                className={"h-15 w-15 rounded-md"}
+              />
             </span>
             I am a Software engineer.
           </h1>
