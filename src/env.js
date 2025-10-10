@@ -9,6 +9,9 @@ export const env = createEnv({
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
     TRPC_AUTH_TOKEN: z.string().min(1),
+    SPOTIFY_CLIENT_ID: z.string().min(1).optional(),
+    SPOTIFY_CLIENT_SECRET: z.string().min(1).optional(),
+    SPOTIFY_PLAYLIST_ID: z.string().min(1).optional(),
   },
 
   /**
@@ -27,6 +30,9 @@ export const env = createEnv({
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
     TRPC_AUTH_TOKEN: process.env.TRPC_AUTH_TOKEN,
+    SPOTIFY_CLIENT_ID: process.env.SPOTIFY_CLIENT_ID,
+    SPOTIFY_CLIENT_SECRET: process.env.SPOTIFY_CLIENT_SECRET,
+    SPOTIFY_PLAYLIST_ID: process.env.SPOTIFY_PLAYLIST_ID,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

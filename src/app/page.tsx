@@ -10,6 +10,7 @@ import { LinkedinCard } from "~/app/components/cards/linkedin-card";
 import { createCaller } from "~/server/api/root";
 import { env } from "~/env";
 import type { WeatherPayload } from "~/server/api/routers/weather";
+import type { DeezerPlaylistPayload } from "~/server/api/routers/deezer";
 import { AboutMe } from "~/app/components/cards/about-me";
 import { Stack } from "~/app/components/cards/stack";
 
@@ -103,6 +104,7 @@ export default async function Home() {
   });
 
   let weather: WeatherPayload | null = null;
+  let playlist: DeezerPlaylistPayload | null = null;
 
   try {
     weather = await caller.weather.current({
@@ -112,6 +114,12 @@ export default async function Home() {
     });
   } catch (error) {
     console.error('[weather] failed to load weather data', error);
+  }
+
+  try {
+    playlist = await caller.deezer.playlist();
+  } catch (error) {
+    console.error('[deezer] failed to load playlist data', error);
   }
 
   return (
@@ -128,7 +136,7 @@ export default async function Home() {
             </section>
             <div className={"col-span-3 lg:col-span-1 flex flex-col sm:flex-row lg:flex-col gap-6 sm:gap-12"}>
               <section className={'w-full h-full'}>
-                <SpotifyCard />
+                <SpotifyCard playlist={playlist} />
               </section>
               <section className={'w-full h-full'}>
                 <LinkedinCard />
