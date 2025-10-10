@@ -2,8 +2,8 @@ import { HydrateClient } from "~/trpc/server";
 import { MenuBar } from "~/app/components/menu-bar";
 import { SpotifyCard } from "~/app/components/cards/spotify-card";
 import { Card } from "~/app/components/cards/card";
-import { Experience, type TExperience } from "~/app/components/experience";
-import { Education, type TEducation } from "~/app/components/education";
+import { Experience, type TExperience } from "~/app/components/cards/experience";
+import { Education, type TEducation } from "~/app/components/cards/education";
 import { Footer } from "~/app/components/footer";
 import { Intro } from "~/app/components/intro";
 import { LinkedinCard } from "~/app/components/cards/linkedin-card";
@@ -11,6 +11,7 @@ import { createCaller } from "~/server/api/root";
 import { env } from "~/env";
 import type { WeatherPayload } from "~/server/api/routers/weather";
 import { AboutMe } from "~/app/components/cards/about-me";
+import { Stack } from "~/app/components/cards/stack";
 
 const experiences: TExperience[] = [
   {
@@ -133,6 +134,9 @@ export default async function Home() {
                 <LinkedinCard />
               </section>
             </div>
+            <section className={"col-span-3"}>
+              <Stack />
+            </section>
             <section className={"col-span-3 flex flex-col gap-12"}>
               <Card>
                 <div className={'flex flex-col gap-6'}>

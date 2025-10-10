@@ -46,7 +46,7 @@ export function Intro() {
             that makes complex things feel simple.
           </h2>
           <Button asChild variant={'solid'} size={'md'} className={'rounded-full'}>
-            <Link href={'mailto:hey@basmensinga.nl'}>Let's chat</Link>
+            <Link href={'mailto:hey@basmensinga.nl'}>Let&#39;s chat</Link>
           </Button>
         </div>
         <Fog />

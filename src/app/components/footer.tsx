@@ -35,7 +35,7 @@ export function Footer() {
                   size={'md'}
                   className={'rounded-full'}
                 >
-                  <Link href={'mailto:hey@basmensinga.nl'}>Let's chat</Link>
+                  <Link href={'mailto:hey@basmensinga.nl'}>Let&#39;s chat</Link>
                 </Button>
                 <div className={'flex gap-2 items-center justify-center'}>
                   <ClockIcon className={'size-3.5 text-ink-muted'} />
