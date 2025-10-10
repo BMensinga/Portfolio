@@ -48,7 +48,7 @@ export function Footer() {
               </div>
               <div className={'flex justify-center overflow-hidden relative h-12 sm:h-16 md:h-20'}>
                 <motion.h2
-                  className={'bg-gradient-to-b from-brand to-brand/0 text-transparent text-5xl top-4 sm:text-6xl sm:top-6 md:text-7xl md:top-8 lg:text-[96px] lg:leading-normal lg:-top-2 xl:text-[128px] xl:leading-normal xl:-top-9 font-medium z-30 bg-clip-text absolute'}
+                  className={'bg-gradient-to-b from-brand to-brand/0 text-transparent text-4xl top-6 sm:text-6xl sm:top-6 md:text-7xl md:top-8 lg:text-[96px] lg:leading-normal lg:-top-2 xl:text-[128px] xl:leading-normal xl:-top-9 font-medium z-30 bg-clip-text absolute'}
                   style={{ letterSpacing }}
                 >
                   Bas Mensinga

@@ -54,7 +54,7 @@ export function MenuBar({ weather }: MenuBarProps) {
                 : 'bg-surface-alt'
             )}>
               <Globe className={'size-3.5 text-ink-muted'}/>
-              <span className={'text-ink-muted font-normal text-sm'}>Gouda • The Netherlands</span>
+              <span className={'text-ink-muted font-normal text-xs sm:text-sm'}>Gouda • The Netherlands</span>
             </div>
             <div className={'w-px py-1 flex'}><span className={'bg-divider rounded-full h-full w-px'} /></div>
             <div className={'flex gap-2'}>
@@ -65,7 +65,7 @@ export function MenuBar({ weather }: MenuBarProps) {
                   : 'bg-surface-alt'
               )}>
                 <ClockIcon className={'size-3.5 text-ink-muted'}/>
-                <time className={'flex gap-px items-center justify-center text-ink-muted font-normal text-sm'}>
+                <time className={'flex gap-px items-center justify-center text-ink-muted font-normal text-xs sm:text-sm'}>
                   <span className={'tabular-nums'}>{hours}</span>
                   <span className={'time-colon pb-0.5'}>:</span>
                   <span className={'tabular-nums'}>{minutes}</span>
@@ -79,7 +79,7 @@ export function MenuBar({ weather }: MenuBarProps) {
               )}>
                 <WeatherIcon kind={weather?.kind ?? 'clear'} className={'size-3.5 text-ink-muted'} />
                 <div className={'flex flex-col leading-none'}>
-                  <span className={'text-ink-muted font-normal text-sm tabular-nums'}>
+                  <span className={'text-ink-muted font-normal tabular-nums text-xs sm:text-sm'}>
                     {weather ? `${Math.round(weather.temperature ?? 0)}°C` : '—'}
                   </span>
                 </div>
