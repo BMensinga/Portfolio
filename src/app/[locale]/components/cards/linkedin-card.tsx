@@ -1,13 +1,14 @@
 'use client'
 
-import { LinkedinIcon } from '~/app/components/icons/linkedin';
-import Link from 'next/link';
-import { ExternalLinkIcon } from '~/app/components/icons/external-link';
-import { Card } from '~/app/components/cards/card';
+import { LinkedinIcon } from '~/app/[locale]/components/icons/linkedin';
+import { Link } from "~/i18n/navigation";
+import { ExternalLinkIcon } from '~/app/[locale]/components/icons/external-link';
+import { Card } from '~/app/[locale]/components/cards/card';
 import { motion } from 'motion/react';
 import { useMemo, useState } from 'react';
-import { cn } from '~/app/libs/utils';
+import { cn } from '~/app/[locale]/libs/utils';
 import Image from "next/image";
+import { useTranslations } from 'next-intl';
 
 export function LinkedinCard() {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -15,6 +16,8 @@ export function LinkedinCard() {
     () => (isExpanded ? 'circle(160% at 88% 8%)' : 'circle(0% at calc(100% - 52px) 56px)'),
     [isExpanded],
   );
+  const tCommon = useTranslations('common');
+  const tLinkedin = useTranslations('linkedin');
 
   return (
     <Card className={'relative overflow-hidden h-fit'}>
@@ -33,12 +36,12 @@ export function LinkedinCard() {
                 src={'/images/profile-pic.webp'}
                 width={128}
                 height={128}
-                alt={'Profile picture of Bas Mensinga'}
+                alt={tLinkedin('profileAlt')}
                 className={"flex h-12 w-12 items-center justify-center rounded-full"}
               />
               <div className={'flex flex-col'}>
                 <p className={cn('text-sm font-medium', isExpanded ? 'text-white' : 'text-ink')}>
-                  Bas Mensinga
+                  {tCommon('name')}
                 </p>
                 <span
                   className={cn('text-xs font-normal', isExpanded ? 'text-white/80' : 'text-ink-muted')}
@@ -67,7 +70,7 @@ export function LinkedinCard() {
             </Link>
           </div>
           <p className={cn('text-sm font-normal transition-colors duration-150', isExpanded ? 'text-white/85' : 'text-ink')}>
-            Currently at
+            {tLinkedin('currentlyAt')}
             {' '}
             <Link
               href={'https://dictu.nl'}

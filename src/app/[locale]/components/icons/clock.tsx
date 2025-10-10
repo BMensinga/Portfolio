@@ -1,6 +1,6 @@
 'use client'
 
-import { useCurrentTime } from "~/app/hooks/use-current-time";
+import { useCurrentTime } from "~/app/[locale]/hooks/use-current-time";
 
 export function ClockIcon({ className }: { className?: string }) {
   const time = useCurrentTime();

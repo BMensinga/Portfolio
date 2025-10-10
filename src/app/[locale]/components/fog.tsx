@@ -3,7 +3,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import Image from "next/image";
 import type { CSSProperties } from "react";
-import { useFog } from "~/app/providers/fog-provider";
+import { useFog } from "~/app/[locale]/providers/fog-provider";
 
 interface FogImage {
   id: string;

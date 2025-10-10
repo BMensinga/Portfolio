@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { cn } from "~/app/libs/utils";
+import { cn } from "~/app/[locale]/libs/utils";
 
 export function Card({ children, className }: { children: ReactNode, className?: string }) {
   return (

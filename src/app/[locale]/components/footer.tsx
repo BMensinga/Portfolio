@@ -1,18 +1,20 @@
 'use client'
 
-import { FogProvider } from '~/app/providers/fog-provider';
-import { Card } from '~/app/components/cards/card';
-import Link from 'next/link';
-import { Fog } from '~/app/components/fog';
+import { FogProvider } from '~/app/[locale]/providers/fog-provider';
+import { Card } from '~/app/[locale]/components/cards/card';
+import { Link } from "~/i18n/navigation";
+import { Fog } from '~/app/[locale]/components/fog';
 import { motion, useScroll, useTransform } from 'motion/react';
-import { Button } from '~/app/components/button';
-import { useCurrentTime } from '~/app/hooks/use-current-time';
-import { ClockIcon } from "~/app/components/icons/clock";
+import { Button } from '~/app/[locale]/components/button';
+import { useCurrentTime } from '~/app/[locale]/hooks/use-current-time';
+import { ClockIcon } from "~/app/[locale]/components/icons/clock";
+import { useTranslations } from 'next-intl';
 
 export function Footer() {
   const time = useCurrentTime();
   const hours = time.getHours().toString().padStart(2, '0');
   const minutes = time.getMinutes().toString().padStart(2, '0');
+  const tCommon = useTranslations('common');
 
   const { scrollYProgress } = useScroll();
   const letterSpacing = useTransform(
@@ -35,7 +37,7 @@ export function Footer() {
                   size={'md'}
                   className={'rounded-full'}
                 >
-                  <Link href={'mailto:hey@basmensinga.nl'}>Let&#39;s chat</Link>
+                  <Link href={'mailto:hey@basmensinga.nl'}>{tCommon('cta.contact')}</Link>
                 </Button>
                 <div className={'flex gap-2 items-center justify-center'}>
                   <ClockIcon className={'size-3.5 text-ink-muted'} />
@@ -51,7 +53,7 @@ export function Footer() {
                   className={'bg-gradient-to-b from-brand to-brand/0 text-transparent text-4xl top-6 sm:text-6xl sm:top-6 md:text-7xl md:top-8 lg:text-[96px] lg:leading-normal lg:-top-2 xl:text-[128px] xl:leading-normal xl:-top-9 font-medium z-30 bg-clip-text absolute'}
                   style={{ letterSpacing }}
                 >
-                  Bas Mensinga
+                  {tCommon('name')}
                 </motion.h2>
               </div>
             </Card>

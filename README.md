@@ -1,29 +1,79 @@
-# Create T3 App
+# Portfolio
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+A personal portfolio built with the Next.js app router, showcasing interactive cards, rich animations, and server-backed data. It features a Spotify-inspired music experience that pulls preview snippets from Deezer under the hood, along with real-time weather data and other dynamic UI elements.
 
-## What's next? How do I make an app with this?
+## Highlights
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+- **Spotify-style music card** – enter any Spotify playlist ID and the backend resolves tracks against Deezer so visitors can play public previews.
+- **Custom weather display** – fetches current conditions from Open-Meteo and maps raw weather codes into friendly UI states.
+- **Motion-first UI** – volume controls, track transitions, and hover states are built with Motion for precise, state-aware animations.
+- **Type-safe backend** – tRPC + Effect handle routing, caching, and retries with strong typing from Zod and TypeScript end-to-end.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+## Tech Stack
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+- **Framework:** Next.js 15 (App Router)
+- **Language:** TypeScript
+- **State / Data:** tRPC, Effect, @tanstack/react-query
+- **Styling & Animations:** Tailwind, Motion
+- **Tooling:** ESLint, Prettier, TypeScript
 
-## Learn More
+## Getting Started
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+### 1. Install dependencies
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+```bash
+npm install
+```
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+### 2. Configure environment variables
 
-## How do I deploy this?
+Create a `.env.local` file and copy the values from `.env.example`:
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+```env
+TRPC_AUTH_TOKEN=your-secure-token
+
+SPOTIFY_CLIENT_ID=your-spotify-client-id
+SPOTIFY_CLIENT_SECRET=your-spotify-client-secret
+SPOTIFY_PLAYLIST_ID=the-playlist-to-show
+```
+
+- **TRPC_AUTH_TOKEN** protects the server routes. The same token is sent from server components when calling tRPC.
+- **Spotify credentials** are used only to read playlist metadata via the client-credentials flow.
+
+### 3. Run the development server
+
+```bash
+npm run dev
+```
+
+Open <http://localhost:3000> to view the site. The Spotify-like card should hydrate with the configured playlist, and the hero bar will display live weather data.
+
+## Available Scripts
+
+| Script | Description |
+| --- | --- |
+| `npm run dev` | Start the Next.js development server |
+| `npm run build` | Build the production bundle |
+| `npm run start` | Run the production server locally |
+| `npm run typecheck` | Type-check the project with `tsc --noEmit` |
+| `npm run lint` | Run ESLint |
+
+## Architecture Notes
+
+- **Caching:** Weather responses and playlist lookups are cached to avoid repeated upstream calls. Spotify tokens are cached until expiry.
+- **Playlist ingestion:** The backend fetches tracks from Spotify, then searches Deezer for previews (Spotify has deprecated their preview functionality of songs). The matching keys are cached so repeated lookups are instant.
+- **Weather mapping:** Weather codes are normalized to a fixed set of UI-friendly categories before rendering, centralizing the mapping logic.
+
+## Deployment
+
+The project ships as a standard Next.js app.
+
+## License
+
+Released under the [MIT License](./LICENSE) © Bas Mensinga.
+
+## Credits
+
+- Weather data provided by [Open-Meteo](https://open-meteo.com/).
+- Track metadata powered by [Spotify Web API](https://developer.spotify.com/documentation/web-api/) with previews served via [Deezer](https://developers.deezer.com/api).
+- UI icons are mostly provided by Lucide.

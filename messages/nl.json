@@ -1,0 +1,148 @@
+{
+  "common": {
+    "name": "Bas Mensinga",
+    "location": "Gouda • Nederland",
+    "weatherUnavailable": "—",
+    "switchLocale": "{locale, select, en {EN} nl {NL} other {#}}",
+    "cta": {
+      "contact": "Bakje koffie doen?"
+    }
+  },
+  "intro": {
+    "greeting": "Hoi, ik ben {name}.",
+    "role": "Ik ben software engineer.",
+    "headline": {
+      "prefix": "Ik bouw software",
+      "suffix": "die complexe dingen weer eenvoudig maakt."
+    },
+    "profileAlt": "Profielfoto van Bas Mensinga"
+  },
+  "menu": {
+    "location": "Gouda • Nederland"
+  },
+  "linkedin": {
+    "profileAlt": "Profielfoto van Bas Mensinga",
+    "currentlyAt": "Momenteel bij"
+  },
+  "spotify": {
+    "unknownArtist": "Onbekende artiest",
+    "noArtwork": "Geen artwork",
+    "playlistUnavailable": "Afspeellijst niet beschikbaar",
+    "previewUnavailable": "Preview niet beschikbaar voor deze afspeellijst",
+    "openOnSpotify": "Open afspeellijst op Spotify",
+    "volume": {
+      "mute": "Geluid uit",
+      "unmute": "Geluid aan"
+    },
+    "controls": {
+      "previous": "Vorig fragment afspelen",
+      "next": "Volgend fragment afspelen",
+      "play": "Preview afspelen",
+      "pause": "Preview pauzeren"
+    },
+    "disclaimer": "Niet verbonden aan Spotify. Album-art en previews worden aangeleverd door Deezer."
+  },
+  "about": {
+    "title": "Over mij",
+    "sections": {
+      "origin": {
+        "title": "Waar ik vandaan kom",
+        "body": "Ik ben geboren en getogen in Nederland. Mijn ouders gaven mij en mijn broer de ruimte om dingen zelf uit te zoeken. Ik bracht als kind ontelbare uren achter een scherm door met code en games – achteraf een prima investering."
+      },
+      "past": {
+        "title": "Wat ik eerder deed",
+        "body": "Mijn eerste banen waren niet glamorous. Ik vulde schappen en probeerde van alles, vooral om mensen beter te leren begrijpen. Uiteindelijk verschoof de focus naar technologie: kleine projecten, freelance klussen en ontdekken hoe software het dagelijks werk makkelijker kan maken."
+      },
+      "present": {
+        "title": "Wat ik nu doe",
+        "body": "Tegenwoordig werk ik als medior software engineer bij <dictu>@DICTU</dictu>. Daarnaast experimenteer ik graag met nieuwe tools en libraries en bouw ik prototypes die producten menselijker en eenvoudiger maken."
+      },
+      "life": {
+        "title": "Waar ik nu sta",
+        "body": "Ik woon in Gouda en balanceer werk, hobby's en side-projecten. Als ik niet codeer, ben ik in de sportschool (of mezelf aan het overtuigen om te gaan) of met vrienden en familie."
+      },
+      "future": {
+        "title": "Waar ik naar zoek",
+        "body": "Kansen om impactvolle producten te bouwen met sterke teams. Technologie moet complexiteit wegnemen in plaats van toevoegen – zeker voor vakmensen en mkb-bedrijven. Daar valt nog veel winst te boeken."
+      }
+    }
+  },
+  "stack": {
+    "title": "Stack",
+    "description": "Ik houd het graag modern maar pragmatisch. Dit is de stack waar ik nu het meest mee werk."
+  },
+  "experience": {
+    "title": "Ervaring",
+    "toggle": {
+      "showMore": "Toon meer",
+      "showLess": "Toon minder"
+    },
+    "jobTypes": {
+      "fullTime": "Fulltime",
+      "partTime": "Parttime",
+      "internship": "Stage",
+      "freelance": "Freelance",
+      "contract": "Contract"
+    },
+    "current": "heden",
+    "duration": {
+      "years": "{count, plural, one {# jaar} other {# jaar}}",
+      "months": "{count, plural, one {# maand} other {# maanden}}",
+      "lessThanMonth": "< 1 maand"
+    },
+    "companies": {
+      "dictu": {
+        "alt": "Het logo van Dienst ICT Uitvoering",
+        "items": {
+          "softwareEngineer": {
+            "title": "Software Engineer",
+            "titleDescription": "via Finalist",
+            "description": "Ontwikkel AI Chat- en Assistant-functionaliteit.\nBouw samenwerkende whiteboards met realtime updates.\nOnderhoud de Zalo Mini App voor Simplamo met soepele integraties.\nMaak dashboards rijker met interactieve grafieken en analyses.\nVersterk kernfunctionaliteit om de gebruikerservaring te verbeteren.\nBewaak de consistentie in UI en UX.\nLever robuuste front-ends voor web en mobiel.\nEvalueer technische opties en adviseer de beste oplossing."
+          }
+        }
+      },
+      "finalist": {
+        "alt": "Het logo van Finalist",
+        "items": {
+          "softwareEngineer": {
+            "title": "Software Engineer",
+            "titleDescription": "",
+            "description": "Ondersteun klantprojecten met moderne front-end tooling en coach teams in best practices."
+          }
+        }
+      },
+      "vdmi": {
+        "alt": "Het logo van VDMi",
+        "items": {
+          "juniorDrupalDeveloperPartTime": {
+            "title": "Junior Drupal developer",
+            "titleDescription": "",
+            "description": "Onderhield Drupal-sites, implementeerde nieuwe features en hielp bij contentmigraties voor klanten."
+          },
+          "juniorDrupalDeveloperInternship": {
+            "title": "Junior Drupal developer",
+            "titleDescription": "Stage",
+            "description": "Leerde de basis van Drupal-ontwikkeling en ondersteunde senior developers bij klantopdrachten."
+          }
+        }
+      }
+    }
+  },
+  "education": {
+    "title": "Opleiding",
+    "schools": {
+      "hhs": {
+        "alt": "Logo van De Haagse Hogeschool",
+        "degree": "Bachelor",
+        "degreeDescription": "Informatica (Software Engineering)",
+        "description": "Verdiepte me in schaalbare webapplicaties met focus op gebruiksvriendelijkheid en onderhoudbaarheid."
+      },
+      "glr": {
+        "alt": "Logo van het Grafisch Lyceum Rotterdam",
+        "degree": "MBO niveau 4",
+        "degreeDescription": "Applicatie- en mediaontwikkelaar",
+        "description": "Leerde de basis van design en front-end en werkte mee aan echte klantprojecten."
+      }
+    }
+  }
+}

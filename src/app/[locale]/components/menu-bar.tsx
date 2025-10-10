@@ -2,14 +2,17 @@
 
 import { Globe } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
-import { cn } from "~/app/libs/utils";
-import Link from "next/link";
-import { useMenuBarVisibility } from "~/app/providers/menu-bar-visibility-provider";
+import { cn } from "~/app/[locale]/libs/utils";
+import { Link, usePathname } from "~/i18n/navigation";
+import { useMenuBarVisibility } from "~/app/[locale]/providers/menu-bar-visibility-provider";
 import { useState } from "react";
-import { useCurrentTime } from "~/app/hooks/use-current-time";
-import { ClockIcon } from "~/app/components/icons/clock";
-import { WeatherIcon } from "~/app/components/icons/weather";
+import { useCurrentTime } from "~/app/[locale]/hooks/use-current-time";
+import { ClockIcon } from "~/app/[locale]/components/icons/clock";
+import { WeatherIcon } from "~/app/[locale]/components/icons/weather";
 import type { WeatherPayload } from "~/server/api/routers/weather";
+import { useLocale, useTranslations } from "next-intl";
+import { routing } from "~/i18n/routing";
+import { Button } from "~/app/[locale]/components/button";
 
 type MenuBarProps = {
   weather?: WeatherPayload | null;
@@ -19,6 +22,10 @@ export function MenuBar({ weather }: MenuBarProps) {
   const time = useCurrentTime();
   const hours = time.getHours().toString().padStart(2, '0');
   const minutes = time.getMinutes().toString().padStart(2, '0');
+  const tCommon = useTranslations('common');
+  const pathname = usePathname();
+  const currentLocale = useLocale();
+  const otherLocales = routing.locales.filter((locale) => locale !== currentLocale);
 
   const { scrollYProgress } = useScroll();
   const { isIntroInView } = useMenuBarVisibility();
@@ -42,11 +49,28 @@ export function MenuBar({ weather }: MenuBarProps) {
             : 'bg-white'
         )}
       >
-        <div className={'flex flex-col sm:flex-row gap-2 justify-between mx-auto'}>
-          <Link href={'/'} className={'text-2xl font-medium text-brand hover:text-brand/90'}>
-            Bas Mensinga
-          </Link>
-          <div className={'flex gap-2'}>
+        <div className={'flex flex-col sm:flex-row gap-x-4 gap-y-2 justify-between mx-auto'}>
+          <div className={'flex justify-between gap-4 grow'}>
+            <Link href={'/'} className={'text-2xl font-medium text-brand hover:text-brand/90'}>
+              {tCommon('name')}
+            </Link>
+            {otherLocales.map((locale) => (
+              <Button
+                key={locale}
+                asChild
+                variant={'solid'}
+                size={'md'}
+              >
+                <Link
+                  href={pathname ?? '/'}
+                  locale={locale}
+                >
+                  {tCommon('switchLocale', { locale })}
+                </Link>
+              </Button>
+            ))}
+          </div>
+          <div className={'flex gap-2 justify-between sm:justify-start'}>
             <div className={cn(
               'rounded-lg flex gap-2 py-0.5 px-1.5 items-center justify-center transition-all duration-300',
               isIntroInView
@@ -54,9 +78,9 @@ export function MenuBar({ weather }: MenuBarProps) {
                 : 'bg-surface-alt'
             )}>
               <Globe className={'size-3.5 text-ink-muted'}/>
-              <span className={'text-ink-muted font-normal text-xs sm:text-sm'}>Gouda • The Netherlands</span>
+              <span className={'text-ink-muted font-normal text-xs sm:text-sm'}>{tCommon('location')}</span>
             </div>
-            <div className={'w-px py-1 flex'}><span className={'bg-divider rounded-full h-full w-px'} /></div>
+            <div className={'w-px py-1 hidden sm:flex'}><span className={'bg-divider rounded-full h-full w-px'} /></div>
             <div className={'flex gap-2'}>
               <div className={cn(
                 'rounded-lg flex gap-2 py-0.5 px-1.5 items-center justify-center transition-all duration-300',
@@ -80,7 +104,7 @@ export function MenuBar({ weather }: MenuBarProps) {
                 <WeatherIcon kind={weather?.kind ?? 'clear'} className={'size-3.5 text-ink-muted'} />
                 <div className={'flex flex-col leading-none'}>
                   <span className={'text-ink-muted font-normal tabular-nums text-xs sm:text-sm'}>
-                    {weather ? `${Math.round(weather.temperature ?? 0)}°C` : '—'}
+                    {weather ? `${Math.round(weather.temperature ?? 0)}°C` : tCommon('weatherUnavailable')}
                   </span>
                 </div>
               </div>

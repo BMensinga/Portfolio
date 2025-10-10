@@ -1,0 +1,148 @@
+{
+  "common": {
+    "name": "Bas Mensinga",
+    "location": "Gouda • The Netherlands",
+    "weatherUnavailable": "—",
+    "switchLocale": "{locale, select, en {EN} nl {NL} other {#}}",
+    "cta": {
+      "contact": "Let's chat"
+    }
+  },
+  "intro": {
+    "greeting": "Hey, I'm {name}.",
+    "role": "I am a Software engineer.",
+    "headline": {
+      "prefix": "I build software",
+      "suffix": "that makes complex things feel simple."
+    },
+    "profileAlt": "Profile picture of Bas Mensinga"
+  },
+  "menu": {
+    "location": "Gouda • The Netherlands"
+  },
+  "linkedin": {
+    "profileAlt": "Profile picture of Bas Mensinga",
+    "currentlyAt": "Currently at"
+  },
+  "spotify": {
+    "unknownArtist": "No artist known",
+    "noArtwork": "No artwork",
+    "playlistUnavailable": "Playlist unavailable",
+    "previewUnavailable": "Preview unavailable for this playlist",
+    "openOnSpotify": "Open playlist on Spotify",
+    "volume": {
+      "mute": "Mute previews",
+      "unmute": "Unmute previews"
+    },
+    "controls": {
+      "previous": "Play previous preview",
+      "next": "Play next preview",
+      "play": "Play preview",
+      "pause": "Pause preview"
+    },
+    "disclaimer": "Not affiliated with Spotify. Album art and song previews are from Deezer."
+  },
+  "about": {
+    "title": "About me",
+    "sections": {
+      "origin": {
+        "title": "Where I'm From",
+        "body": "I was born and raised in the Netherlands. My parents worked hard to give me and my brother the room to figure things out. I spent countless hours behind a screen tinkering with code and games—time well spent, in hindsight."
+      },
+      "past": {
+        "title": "What I Used to Do",
+        "body": "My first jobs weren't glamorous. I stocked shelves and tried a mix of roles that taught me a lot about people. Eventually I leaned into tech—building side projects, taking on freelance work, and seeing how software could make daily work simpler."
+      },
+      "present": {
+        "title": "What I Do Now",
+        "body": "Today, I'm a mid-level software engineer working at <dictu>@DICTU</dictu>. On the side I experiment with new tools and libraries, building prototypes that make products more human and less cumbersome."
+      },
+      "life": {
+        "title": "Where I'm At Now",
+        "body": "I live in Gouda, balancing work, hobbies, and side projects. When I'm not coding, you'll usually find me at the gym (or convincing myself to go), or spending time with friends and family."
+      },
+      "future": {
+        "title": "What I'm Looking For",
+        "body": "Opportunities to build thoughtful products with great teams. I believe software should remove friction, not add it—especially for trades and small businesses. There's still plenty of old tooling waiting to be improved."
+      }
+    }
+  },
+  "stack": {
+    "title": "Stack",
+    "description": "I like to keep things modern but practical. Here's my current stack."
+  },
+  "experience": {
+    "title": "Experience",
+    "toggle": {
+      "showMore": "Show more",
+      "showLess": "Show less"
+    },
+    "jobTypes": {
+      "fullTime": "Full-time",
+      "partTime": "Part-time",
+      "internship": "Internship",
+      "freelance": "Freelance",
+      "contract": "Contract"
+    },
+    "current": "present",
+    "duration": {
+      "years": "{count, plural, one {# yr} other {# yrs}}",
+      "months": "{count, plural, one {# mth} other {# mths}}",
+      "lessThanMonth": "< 1 mth"
+    },
+    "companies": {
+      "dictu": {
+        "alt": "The logo of Dienst ICT Uitvoering",
+        "items": {
+          "softwareEngineer": {
+            "title": "Software Engineer",
+            "titleDescription": "via Finalist",
+            "description": "Develop AI Chat and Assistant features.\nDevelop collaborative whiteboards with real-time updates.\nMaintain the Zalo Mini App for Simplamo with seamless integration.\nBuild charting and analytics widgets to elevate dashboards.\nImprove core functionality to sharpen UX.\nGuard consistency across UI/UX touchpoints.\nShip resilient frontends for web and mobile.\nEvaluate technical options and recommend the best path."
+          }
+        }
+      },
+      "finalist": {
+        "alt": "The logo of Finalist",
+        "items": {
+          "softwareEngineer": {
+            "title": "Software Engineer",
+            "titleDescription": "",
+            "description": "Supporting client projects with modern front-end tooling while coaching teams on best practices."
+          }
+        }
+      },
+      "vdmi": {
+        "alt": "The logo of VDMi",
+        "items": {
+          "juniorDrupalDeveloperPartTime": {
+            "title": "Junior Drupal developer",
+            "titleDescription": "",
+            "description": "Helped maintain Drupal sites, implemented new features, and assisted with content migrations for clients."
+          },
+          "juniorDrupalDeveloperInternship": {
+            "title": "Junior Drupal developer",
+            "titleDescription": "Internship",
+            "description": "Learned the fundamentals of Drupal development, supporting senior engineers on customer projects."
+          }
+        }
+      }
+    }
+  },
+  "education": {
+    "title": "Education",
+    "schools": {
+      "hhs": {
+        "alt": "Logo of The Hague University of Applied Sciences",
+        "degree": "Bachelor's degree",
+        "degreeDescription": "Informatics (Software Engineering)",
+        "description": "Specialised in building scalable web applications with a focus on user-centric design and maintainability."
+      },
+      "glr": {
+        "alt": "Logo of the Grafisch Lyceum Rotterdam",
+        "degree": "MBO level 4",
+        "degreeDescription": "Application and Media Developer",
+        "description": "Studied design and front-end fundamentals while gaining hands-on experience with real client projects."
+      }
+    }
+  }
+}

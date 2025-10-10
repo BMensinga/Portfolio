@@ -1,17 +1,18 @@
 'use client'
 
-import { Card } from "~/app/components/cards/card";
-import { SkipBackwardIcon } from "~/app/components/icons/music-player/skip-backward";
-import { SkipForwardIcon } from "~/app/components/icons/music-player/skip-forward";
-import { PauseIcon } from "~/app/components/icons/music-player/pause";
-import { PlayIcon } from "~/app/components/icons/music-player/play";
-import { SpotifyIcon } from "~/app/components/icons/music-player/spotify";
+import { Card } from "~/app/[locale]/components/cards/card";
+import { SkipBackwardIcon } from "~/app/[locale]/components/icons/music-player/skip-backward";
+import { SkipForwardIcon } from "~/app/[locale]/components/icons/music-player/skip-forward";
+import { PauseIcon } from "~/app/[locale]/components/icons/music-player/pause";
+import { PlayIcon } from "~/app/[locale]/components/icons/music-player/play";
+import { SpotifyIcon } from "~/app/[locale]/components/icons/music-player/spotify";
 import { useCallback, useEffect, useMemo, useRef, useState, type FocusEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Volume, Volume1, Volume2, VolumeX } from "lucide-react";
-import Link from "next/link";
-import { cn } from "~/app/libs/utils";
+import { Link } from "~/i18n/navigation";
+import { cn } from "~/app/[locale]/libs/utils";
 import type { DeezerPlaylistPayload } from "~/server/api/routers/deezer";
+import { useTranslations } from "next-intl";
 
 type SpotifyCardProps = {
   playlist?: DeezerPlaylistPayload | null;
@@ -34,6 +35,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
     () => (isExpanded ? 'circle(160% at 88% 8%)' : 'circle(0% at calc(100% - 52px) 56px)'),
     [isExpanded],
   );
+  const t = useTranslations('spotify');
 
   const playableTracks = useMemo(
     () => (playlist?.tracks ?? []).filter((track) => Boolean(track.previewUrl)),
@@ -45,7 +47,8 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
   const activeTrack = isPlayable
     ? playableTracks[Math.min(trackIndex, playableTracksLength - 1)]
     : playlist?.tracks.at(0) ?? null;
-  const trackArtists = activeTrack?.artists.join(', ') ?? playlist?.curatorName ?? 'No artist known';
+  const trackArtists =
+    activeTrack?.artists.join(', ') ?? playlist?.curatorName ?? t('unknownArtist');
   const linkHref = playlist?.externalUrl ?? 'https://www.deezer.com/';
   const hasPlaylist = Boolean(playlist);
   const artworkSrc = activeTrack?.imageUrl ?? playlist?.imageUrl ?? null;
@@ -238,6 +241,12 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
     : effectiveVolume <= 0.7
     ? Volume1
     : Volume2;
+  const controlsLabels = {
+    previous: t('controls.previous'),
+    next: t('controls.next'),
+    play: t('controls.play'),
+    pause: t('controls.pause'),
+  };
 
   return (
     <div className={'flex flex-col gap-2'}>
@@ -275,7 +284,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.2 }}
                     >
-                      No artwork
+                      {t('noArtwork')}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -292,7 +301,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
                     exit={{ opacity: 0, y: transitionDirection === 'next' ? -12 : 12 }}
                     transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
                   >
-                    {activeTrack?.name ?? playlist?.name ?? 'Playlist unavailable'}
+                    {activeTrack?.name ?? playlist?.name ?? t('playlistUnavailable')}
                   </motion.p>
                 </AnimatePresence>
                 <AnimatePresence mode={'wait'}>
@@ -311,7 +320,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
                 </AnimatePresence>
                 {!isPlayable && (
                   <span className={cn('text-xs font-medium text-ink-muted', isExpanded ? 'text-white/70' : 'text-ink-muted')}>
-                    Preview unavailable for this playlist
+                    {t('previewUnavailable')}
                   </span>
                 )}
               </div>
@@ -327,7 +336,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
               onMouseLeave={() => !isPlaying && setIsExpanded(false)}
               onBlur={() => !isPlaying && setIsExpanded(false)}
               aria-disabled={!hasPlaylist}
-              title={hasPlaylist ? 'Open playlist on Deezer' : 'Deezer playlist unavailable'}
+              title={hasPlaylist ? t('openOnSpotify') : t('playlistUnavailable')}
             >
               <motion.div
                 className={'absolute inset-0 -z-0'}
@@ -343,11 +352,11 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
           <div className={'flex items-center justify-center gap-4'}>
             <div className={'bg-white/50 backdrop-blur-2xl rounded-full border border-border flex items-center gap-6 py-2 px-8 justify-center z-10'}>
               <motion.button
-                type={'button'}
-                onClick={handlePrevious}
-                disabled={controlsDisabled}
-                className={'relative flex h-10 w-10 items-center justify-center rounded-full text-ink-muted transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
-                aria-label={'Play previous preview'}
+              type={'button'}
+              onClick={handlePrevious}
+              disabled={controlsDisabled}
+              className={'relative flex h-10 w-10 items-center justify-center rounded-full text-ink-muted transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
+              aria-label={controlsLabels.previous}
                 whileTap={{ scale: 0.92 }}
                 whileHover={{ scale: 1.2 }}
                 transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
@@ -363,11 +372,11 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
                 </motion.span>
               </motion.button>
               <motion.button
-                type={'button'}
-                onClick={handleTogglePlayback}
-                disabled={controlsDisabled}
-                className={'flex h-12 w-12 items-center justify-center rounded-full border border-border/70 bg-white text-ink transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
-                aria-label={isPlaying ? 'Pause preview' : 'Play preview'}
+              type={'button'}
+              onClick={handleTogglePlayback}
+              disabled={controlsDisabled}
+              className={'flex h-12 w-12 items-center justify-center rounded-full border border-border/70 bg-white text-ink transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
+              aria-label={isPlaying ? controlsLabels.pause : controlsLabels.play}
                 whileTap={{ scale: 0.92 }}
                 whileHover={{ scale: 1.1 }}
                 transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
@@ -375,11 +384,11 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
                 {isPlaying ? <PauseIcon /> : <PlayIcon />}
               </motion.button>
               <motion.button
-                type={'button'}
-                onClick={handleNext}
-                disabled={controlsDisabled}
-                className={'relative flex h-10 w-10 items-center justify-center rounded-full text-ink-muted transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
-                aria-label={'Play next preview'}
+              type={'button'}
+              onClick={handleNext}
+              disabled={controlsDisabled}
+              className={'relative flex h-10 w-10 items-center justify-center rounded-full text-ink-muted transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
+              aria-label={controlsLabels.next}
                 whileTap={{ scale: 0.92 }}
                 whileHover={{ scale: 1.2 }}
                 transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
@@ -407,7 +416,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
                 onClick={toggleMute}
                 className={'flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white/70 text-ink transition group-hover:bg-white focus-visible:outline-none focus-visible:ring-2 group-focus-visible:ring-ink focus-visible:ring-offset-2 group-focus-visible:ring-offset-white '}
                 whileTap={{ scale: 0.94 }}
-                aria-label={effectiveVolume === 0 ? 'Unmute previews' : 'Mute previews'}
+                aria-label={effectiveVolume === 0 ? t('volume.unmute') : t('volume.mute')}
               >
                 <VolumeIconComponent className={'h-5 w-5 text-ink-muted'} />
               </motion.button>
@@ -445,7 +454,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
           </div>
         </div>
       </Card>
-      <span className={'text-xs font-normal text-ink-muted'}>Not affiliated with Spotify or any of the featured individuals. Album art and song previews are from Deezer.</span>
+      <span className={'text-xs font-normal text-ink-muted'}>{t('disclaimer')}</span>
     </div>
   )
 }
