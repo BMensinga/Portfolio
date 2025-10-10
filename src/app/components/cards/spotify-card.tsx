@@ -6,8 +6,9 @@ import { SkipForwardIcon } from "~/app/components/icons/music-player/skip-forwar
 import { PauseIcon } from "~/app/components/icons/music-player/pause";
 import { PlayIcon } from "~/app/components/icons/music-player/play";
 import { SpotifyIcon } from "~/app/components/icons/music-player/spotify";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type FocusEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { Volume, Volume1, Volume2, VolumeX } from "lucide-react";
 import Link from "next/link";
 import { cn } from "~/app/libs/utils";
 import type { DeezerPlaylistPayload } from "~/server/api/routers/deezer";
@@ -23,6 +24,11 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
   const [transitionDirection, setTransitionDirection] = useState<"next" | "previous">('next');
   const [previousShiftCounter, setPreviousShiftCounter] = useState(0);
   const [nextShiftCounter, setNextShiftCounter] = useState(0);
+  const [volume, setVolume] = useState(0.8);
+  const [lastVolumeBeforeMute, setLastVolumeBeforeMute] = useState(0.8);
+  const [isVolumePopoverVisible, setIsVolumePopoverVisible] = useState(false);
+  const isVolumeDraggingRef = useRef(false);
+  const volumeTrackRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const clipPath = useMemo(
     () => (isExpanded ? 'circle(160% at 88% 8%)' : 'circle(0% at calc(100% - 52px) 56px)'),
@@ -75,6 +81,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
     }
 
     const audio = new Audio(previewUrl);
+    audio.volume = Math.min(Math.max(volume, 0), 1);
     audioRef.current = audio;
 
     const advanceTrack = () => {
@@ -132,6 +139,12 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
     };
   }, []);
 
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = Math.min(Math.max(volume, 0), 1);
+    }
+  }, [volume]);
+
   const handleTogglePlayback = useCallback(() => {
     if (!isPlayable) return;
     setIsPlaying((prev) => !prev);
@@ -151,7 +164,80 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
     setPreviousShiftCounter((count) => count + 1);
   }, [isPlayable, playableTracksLength]);
 
+  const toggleMute = useCallback(() => {
+    if (volume === 0) {
+      const restored = lastVolumeBeforeMute > 0 ? lastVolumeBeforeMute : 0.5;
+      setVolume(restored);
+      return;
+    }
+
+    setLastVolumeBeforeMute(volume > 0 ? volume : lastVolumeBeforeMute);
+    setVolume(0);
+  }, [volume, lastVolumeBeforeMute]);
+
+  const setVolumeFromRatio = useCallback((ratio: number) => {
+    const normalized = Math.min(Math.max(ratio, 0), 1);
+    setVolume(normalized);
+
+    if (normalized > 0) {
+      setLastVolumeBeforeMute(normalized);
+    }
+  }, [setLastVolumeBeforeMute]);
+
+  const updateVolumeFromClientY = useCallback((clientY: number) => {
+    const track = volumeTrackRef.current;
+    if (!track) return;
+    const rect = track.getBoundingClientRect();
+    const offset = rect.bottom - clientY;
+    const ratio = rect.height === 0 ? 0 : offset / rect.height;
+    setVolumeFromRatio(ratio);
+  }, [setVolumeFromRatio]);
+
+  const handleVolumePointerDown = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    const target = event.currentTarget;
+    target.setPointerCapture(event.pointerId);
+    isVolumeDraggingRef.current = true;
+    updateVolumeFromClientY(event.clientY);
+  }, [updateVolumeFromClientY]);
+
+  const handleVolumePointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    if (!event.currentTarget.hasPointerCapture(event.pointerId)) return;
+    updateVolumeFromClientY(event.clientY);
+  }, [updateVolumeFromClientY]);
+
+  const handleVolumePointerUp = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    isVolumeDraggingRef.current = false;
+  }, []);
+
+  const showVolumeControls = useCallback(() => {
+    setIsVolumePopoverVisible(true);
+  }, []);
+
+  const hideVolumeControls = useCallback(() => {
+    if (isVolumeDraggingRef.current) return;
+    setIsVolumePopoverVisible(false);
+  }, []);
+
+  const handleVolumeBlur = useCallback((event: FocusEvent<HTMLDivElement>) => {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+      hideVolumeControls();
+    }
+  }, [hideVolumeControls]);
+
   const controlsDisabled = !isPlayable;
+  const effectiveVolume = volume;
+  const volumePercent = Math.round(effectiveVolume * 100);
+  const VolumeIconComponent = effectiveVolume === 0
+    ? VolumeX
+    : effectiveVolume <= 0.35
+    ? Volume
+    : effectiveVolume <= 0.7
+    ? Volume1
+    : Volume2;
 
   return (
     <div className={'flex flex-col gap-2'}>
@@ -254,61 +340,112 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
               </div>
             </Link>
           </div>
-          <div className={'bg-white/50 backdrop-blur-2xl rounded-full border border-border flex items-center gap-6 py-2 px-12 justify-center z-10 mx-auto'}>
-            <motion.button
-              type={'button'}
-              onClick={handlePrevious}
-              disabled={controlsDisabled}
-              className={'relative flex h-10 w-10 items-center justify-center rounded-full text-ink-muted transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
-              aria-label={'Play previous preview'}
-              whileTap={{ scale: 0.92 }}
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
-            >
-              <motion.span
-                key={previousShiftCounter}
-                initial={{ x: -6, opacity: 0.85 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
-                className={'flex items-center justify-center'}
+          <div className={'flex items-center justify-center gap-4'}>
+            <div className={'bg-white/50 backdrop-blur-2xl rounded-full border border-border flex items-center gap-6 py-2 px-8 justify-center z-10'}>
+              <motion.button
+                type={'button'}
+                onClick={handlePrevious}
+                disabled={controlsDisabled}
+                className={'relative flex h-10 w-10 items-center justify-center rounded-full text-ink-muted transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
+                aria-label={'Play previous preview'}
+                whileTap={{ scale: 0.92 }}
+                whileHover={{ scale: 1.2 }}
+                transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
               >
-                <SkipBackwardIcon />
-              </motion.span>
-            </motion.button>
-            <motion.button
-              type={'button'}
-              onClick={handleTogglePlayback}
-              disabled={controlsDisabled}
-              className={'flex h-12 w-12 items-center justify-center rounded-full border border-border/70 bg-white text-ink transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
-              aria-label={isPlaying ? 'Pause preview' : 'Play preview'}
-              whileTap={{ scale: 0.92 }}
-            >
-              {isPlaying ? <PauseIcon /> : <PlayIcon />}
-            </motion.button>
-            <motion.button
-              type={'button'}
-              onClick={handleNext}
-              disabled={controlsDisabled}
-              className={'relative flex h-10 w-10 items-center justify-center rounded-full text-ink-muted transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
-              aria-label={'Play next preview'}
-              whileTap={{ scale: 0.92 }}
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
-            >
-              <motion.span
-                key={nextShiftCounter}
-                initial={{ x: 6, opacity: 0.85 }}
-                animate={{ x: 0, opacity: 1 }}
-                transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
-                className={'flex items-center justify-center'}
+                <motion.span
+                  key={previousShiftCounter}
+                  initial={{ x: -6, opacity: 0.85 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
+                  className={'flex items-center justify-center'}
+                >
+                  <SkipBackwardIcon />
+                </motion.span>
+              </motion.button>
+              <motion.button
+                type={'button'}
+                onClick={handleTogglePlayback}
+                disabled={controlsDisabled}
+                className={'flex h-12 w-12 items-center justify-center rounded-full border border-border/70 bg-white text-ink transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
+                aria-label={isPlaying ? 'Pause preview' : 'Play preview'}
+                whileTap={{ scale: 0.92 }}
+                whileHover={{ scale: 1.1 }}
+                transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
               >
+                {isPlaying ? <PauseIcon /> : <PlayIcon />}
+              </motion.button>
+              <motion.button
+                type={'button'}
+                onClick={handleNext}
+                disabled={controlsDisabled}
+                className={'relative flex h-10 w-10 items-center justify-center rounded-full text-ink-muted transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
+                aria-label={'Play next preview'}
+                whileTap={{ scale: 0.92 }}
+                whileHover={{ scale: 1.2 }}
+                transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
+              >
+                <motion.span
+                  key={nextShiftCounter}
+                  initial={{ x: 6, opacity: 0.85 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
+                  className={'flex items-center justify-center'}
+                >
                 <SkipForwardIcon />
               </motion.span>
             </motion.button>
           </div>
+            <div
+              className={'relative hidden sm:flex items-center group'}
+              onMouseEnter={showVolumeControls}
+              onMouseLeave={hideVolumeControls}
+              onFocusCapture={showVolumeControls}
+              onBlurCapture={handleVolumeBlur}
+            >
+              <motion.button
+                type={'button'}
+                onClick={toggleMute}
+                className={'flex h-10 w-10 items-center justify-center rounded-full border border-border bg-white/70 text-ink transition group-hover:bg-white focus-visible:outline-none focus-visible:ring-2 group-focus-visible:ring-ink focus-visible:ring-offset-2 group-focus-visible:ring-offset-white '}
+                whileTap={{ scale: 0.94 }}
+                aria-label={effectiveVolume === 0 ? 'Unmute previews' : 'Mute previews'}
+              >
+                <VolumeIconComponent className={'h-5 w-5 text-ink-muted'} />
+              </motion.button>
+              <AnimatePresence>
+                {isVolumePopoverVisible && (
+                  <div className={'absolute bottom-full pb-3'}>
+                    <motion.div
+                      key={'volume-slider'}
+                      initial={{ opacity: 0, y: 12, scale: 0.96 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 12, scale: 0.96 }}
+                      transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
+                      className={'flex flex-col items-center gap-2 rounded-xl border border-border bg-white/90 px-3 py-3 shadow-xl backdrop-blur pointer-events-auto w-10'}
+                    >
+                      <span className={'text-xs font-medium text-ink-muted'}>{volumePercent}%</span>
+                      <div
+                        ref={volumeTrackRef}
+                        className={'relative h-32 w-1.5 overflow-hidden rounded-full bg-ink/10 cursor-pointer select-none'}
+                        onPointerDown={handleVolumePointerDown}
+                        onPointerMove={handleVolumePointerMove}
+                        onPointerUp={handleVolumePointerUp}
+                        onPointerCancel={handleVolumePointerUp}
+                      >
+                        <motion.div
+                          className={'absolute bottom-0 left-0 w-full bg-ink tabular-nums'}
+                          animate={{ height: `${volumePercent}%` }}
+                          transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                        />
+                      </div>
+                    </motion.div>
+                  </div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
         </div>
       </Card>
-      <span className={'text-xs font-normal text-ink-muted'}>Not affiliated with Spotify or any of the featured individuals. Album art and song previews from Deezer.</span>
+      <span className={'text-xs font-normal text-ink-muted'}>Not affiliated with Spotify or any of the featured individuals. Album art and song previews are from Deezer.</span>
     </div>
   )
 }
