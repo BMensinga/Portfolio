@@ -17,7 +17,7 @@ export function LinkedinCard() {
   );
 
   return (
-    <Card className={'relative overflow-hidden h-full lg:h-fit'}>
+    <Card className={'relative overflow-hidden h-fit'}>
       <motion.div
         className={'pointer-events-none absolute inset-0 z-0 rounded-2xl bg-[#0A66C2]'}
         initial={false}

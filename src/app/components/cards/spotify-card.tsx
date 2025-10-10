@@ -7,11 +7,10 @@ import { PauseIcon } from "~/app/components/icons/music-player/pause";
 import { PlayIcon } from "~/app/components/icons/music-player/play";
 import { SpotifyIcon } from "~/app/components/icons/music-player/spotify";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { cn } from "~/app/libs/utils";
 import type { DeezerPlaylistPayload } from "~/server/api/routers/deezer";
-import Image from "next/image";
 
 type SpotifyCardProps = {
   playlist?: DeezerPlaylistPayload | null;
@@ -21,6 +20,9 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [trackIndex, setTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [transitionDirection, setTransitionDirection] = useState<"next" | "previous">('next');
+  const [previousShiftCounter, setPreviousShiftCounter] = useState(0);
+  const [nextShiftCounter, setNextShiftCounter] = useState(0);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const clipPath = useMemo(
     () => (isExpanded ? 'circle(160% at 88% 8%)' : 'circle(0% at calc(100% - 52px) 56px)'),
@@ -76,6 +78,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
     audioRef.current = audio;
 
     const advanceTrack = () => {
+      setTransitionDirection('next');
       if (playableTracksLength <= 1) {
         setIsPlaying(false);
         return;
@@ -84,6 +87,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
     };
 
     const handleError = () => {
+      setTransitionDirection('next');
       if (playableTracksLength <= 1) {
         setIsPlaying(false);
         return;
@@ -115,7 +119,6 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
       setIsExpanded(true)
     } else {
       audio.pause();
-      audio.currentTime = 0;
       setIsExpanded(false)
     }
   }, [isPlaying, trackIndex]);
@@ -136,21 +139,25 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
 
   const handleNext = useCallback(() => {
     if (!isPlayable) return;
+    setTransitionDirection('next');
     setTrackIndex((prev) => (prev + 1) % playableTracksLength);
+    setNextShiftCounter((count) => count + 1);
   }, [isPlayable, playableTracksLength]);
 
   const handlePrevious = useCallback(() => {
     if (!isPlayable) return;
+    setTransitionDirection('previous');
     setTrackIndex((prev) => (prev - 1 + playableTracksLength) % playableTracksLength);
+    setPreviousShiftCounter((count) => count + 1);
   }, [isPlayable, playableTracksLength]);
 
   const controlsDisabled = !isPlayable;
 
   return (
     <div className={'flex flex-col gap-2'}>
-      <Card className={'relative h-full'}>
+      <Card className={'relative h-fit'}>
         <motion.div
-          className={'pointer-events-none absolute inset-0 z-0 rounded-2xl bg-[#20D760]'}
+          className={'pointer-events-none absolute inset-0 z-0 rounded-2xl bg-[#20D760] overflow-hidden'}
           initial={false}
           animate={{ clipPath }}
           transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
@@ -159,37 +166,67 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
         <div className={'flex flex-col gap-6'}>
           <div className={'flex justify-between'}>
             <div className={'flex flex-col gap-2 z-10'}>
-              <div className={'w-32 h-32 overflow-hidden rounded-lg bg-white/5 ring-1 ring-inset ring-white/10'}>
-                {artworkSrc ? (
-                  <Image
-                    src={artworkSrc}
-                    alt={`${activeTrack?.name ?? playlist?.name ?? 'Playlist'} cover artwork`}
-                    className={'size-full object-cover'}
-                    loading={'lazy'}
-                    width={128}
-                    height={128}
-                  />
-                ) : (
-                  <div className={'flex size-full items-center justify-center text-ink-muted text-xs uppercase tracking-wide'}>
-                    No artwork
-                  </div>
-                )}
+              <div className={'w-32 h-32 rounded-lg'}>
+                <AnimatePresence mode={'wait'}>
+                  {artworkSrc ? (
+                    <motion.img
+                      key={artworkSrc}
+                      src={artworkSrc}
+                      alt={`${activeTrack?.name ?? playlist?.name ?? 'Playlist'} cover artwork`}
+                      className={'size-full object-cover rounded-lg'}
+                      loading={'lazy'}
+                      initial={{ opacity: 0, x: transitionDirection === 'next' ? 24 : -24, scale: 0.96 }}
+                      animate={{ opacity: 1, x: 0, scale: 1 }}
+                      exit={{ opacity: 0, x: transitionDirection === 'next' ? -24 : 24, scale: 0.96 }}
+                      transition={{ duration: 0.25, ease: [0.33, 1, 0.68, 1] }}
+                    />
+                  ) : (
+                    <motion.div
+                      key={'no-artwork'}
+                      className={'flex size-full items-center justify-center text-ink-muted text-xs uppercase tracking-wide rounded-lg'}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      No artwork
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
               <div className={'flex flex-col'}>
-                <p className={cn('text-sm font-semibold text-ink',
-                  isExpanded ? 'text-white' : 'text-ink'
-                )}>
-                  {activeTrack?.name ?? playlist?.name ?? 'Playlist unavailable'}
-                </p>
-                <span className={cn('text-sm font-normal text-ink-muted',
-                  isExpanded ? 'text-white/80' : 'text-ink-muted'
-                )}>
-                {trackArtists}
-              </span>
+                <AnimatePresence mode={'wait'}>
+                  <motion.p
+                    key={activeTrack?.id ?? playlist?.id ?? 'no-track'}
+                    className={cn('text-sm font-semibold text-ink',
+                      isExpanded ? 'text-white' : 'text-ink'
+                    )}
+                    initial={{ opacity: 0, y: transitionDirection === 'next' ? 12 : -12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: transitionDirection === 'next' ? -12 : 12 }}
+                    transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                  >
+                    {activeTrack?.name ?? playlist?.name ?? 'Playlist unavailable'}
+                  </motion.p>
+                </AnimatePresence>
+                <AnimatePresence mode={'wait'}>
+                  <motion.span
+                    key={`${activeTrack?.id ?? playlist?.id ?? 'no-track'}-artists`}
+                    className={cn('text-sm font-normal text-ink-muted',
+                      isExpanded ? 'text-white/80' : 'text-ink-muted'
+                    )}
+                    initial={{ opacity: 0, y: transitionDirection === 'next' ? 8 : -8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: transitionDirection === 'next' ? -8 : 8 }}
+                    transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                  >
+                    {trackArtists}
+                  </motion.span>
+                </AnimatePresence>
                 {!isPlayable && (
                   <span className={cn('text-xs font-medium text-ink-muted', isExpanded ? 'text-white/70' : 'text-ink-muted')}>
-                  Preview unavailable for this playlist
-                </span>
+                    Preview unavailable for this playlist
+                  </span>
                 )}
               </div>
             </div>
@@ -201,8 +238,8 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
               )}
               onMouseEnter={() => setIsExpanded(true)}
               onFocus={() => setIsExpanded(true)}
-              onMouseLeave={() => setIsExpanded(false)}
-              onBlur={() => setIsExpanded(false)}
+              onMouseLeave={() => !isPlaying && setIsExpanded(false)}
+              onBlur={() => !isPlaying && setIsExpanded(false)}
               aria-disabled={!hasPlaylist}
               title={hasPlaylist ? 'Open playlist on Deezer' : 'Deezer playlist unavailable'}
             >
@@ -217,34 +254,57 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
               </div>
             </Link>
           </div>
-          <div className={'bg-white rounded-full border border-border flex items-center gap-9 py-4 px-12 justify-center z-10'}>
-            <button
+          <div className={'bg-white/50 backdrop-blur-2xl rounded-full border border-border flex items-center gap-6 py-2 px-12 justify-center z-10 mx-auto'}>
+            <motion.button
               type={'button'}
               onClick={handlePrevious}
               disabled={controlsDisabled}
-              className={'flex h-10 w-10 items-center justify-center rounded-full text-ink-muted transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30'}
+              className={'relative flex h-10 w-10 items-center justify-center rounded-full text-ink-muted transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
               aria-label={'Play previous preview'}
+              whileTap={{ scale: 0.92 }}
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
             >
-              <SkipBackwardIcon />
-            </button>
-            <button
+              <motion.span
+                key={previousShiftCounter}
+                initial={{ x: -6, opacity: 0.85 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
+                className={'flex items-center justify-center'}
+              >
+                <SkipBackwardIcon />
+              </motion.span>
+            </motion.button>
+            <motion.button
               type={'button'}
               onClick={handleTogglePlayback}
               disabled={controlsDisabled}
-              className={'flex h-12 w-12 items-center justify-center rounded-full border border-border/70 bg-white text-ink transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30'}
+              className={'flex h-12 w-12 items-center justify-center rounded-full border border-border/70 bg-white text-ink transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
               aria-label={isPlaying ? 'Pause preview' : 'Play preview'}
+              whileTap={{ scale: 0.92 }}
             >
               {isPlaying ? <PauseIcon /> : <PlayIcon />}
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               type={'button'}
               onClick={handleNext}
               disabled={controlsDisabled}
-              className={'flex h-10 w-10 items-center justify-center rounded-full text-ink-muted transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30'}
+              className={'relative flex h-10 w-10 items-center justify-center rounded-full text-ink-muted transition hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-white disabled:cursor-not-allowed disabled:opacity-30 cursor-pointer'}
               aria-label={'Play next preview'}
+              whileTap={{ scale: 0.92 }}
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.22, ease: [0.4, 0, 0.2, 1] }}
             >
-              <SkipForwardIcon />
-            </button>
+              <motion.span
+                key={nextShiftCounter}
+                initial={{ x: 6, opacity: 0.85 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.24, ease: [0.4, 0, 0.2, 1] }}
+                className={'flex items-center justify-center'}
+              >
+                <SkipForwardIcon />
+              </motion.span>
+            </motion.button>
           </div>
         </div>
       </Card>
