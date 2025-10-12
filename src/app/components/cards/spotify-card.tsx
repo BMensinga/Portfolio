@@ -350,7 +350,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
             </div>
           </div>
           <div className={'flex items-center justify-center gap-4'}>
-            <div className={'bg-white/50 backdrop-blur-2xl rounded-full border border-border flex items-center gap-6 py-2 px-8 justify-center z-10'}>
+            <div className={'bg-white/50 backdrop-blur-2xl rounded-full border border-border flex items-center gap-6 py-2 px-8 lg:px-4 xl:px-8 justify-center'}>
               <motion.button
               type={'button'}
               onClick={handlePrevious}
