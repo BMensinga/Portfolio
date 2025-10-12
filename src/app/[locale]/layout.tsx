@@ -12,9 +12,25 @@ import { notFound } from "next/navigation";
 import { getLocale, getMessages } from "next-intl/server";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://basmensinga.nl"),
   title: "Bas Mensinga | Portfolio",
   description: "Portfolio of Bas Mensinga",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
+  openGraph: {
+    type: "website",
+    title: "Bas Mensinga | Portfolio",
+    description: "Portfolio of Bas Mensinga",
+    siteName: "Bas Mensinga | Portfolio",
+    locale: "en_GB",
+    alternateLocale: ["nl_NL"],
+    url: "/",
+    images: [
+      {
+        url: "/images/profile-pic.webp",
+        alt: "Profile picture of Bas Mensinga"
+      }
+    ]
+  }
 };
 
 const poppins = Poppins({
