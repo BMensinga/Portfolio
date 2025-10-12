@@ -75,7 +75,7 @@ export function LinkedinCard() {
             <Link
               href={'https://dictu.nl'}
               className={cn(
-                'transition-colors duration-150 hover:text-brand/90',
+                'transition-colors duration-150 hover:text-brand/80 focus:text-brand/80',
                 isExpanded ? 'text-white underline' : 'text-brand',
               )}
             >

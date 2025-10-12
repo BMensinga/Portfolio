@@ -51,7 +51,7 @@ export function MenuBar({ weather }: MenuBarProps) {
       >
         <div className={'flex flex-col sm:flex-row gap-x-4 gap-y-2 justify-between mx-auto'}>
           <div className={'flex justify-between gap-4 grow'}>
-            <Link href={'/public'} className={'text-2xl font-medium text-brand hover:text-brand/90'}>
+            <Link href={'/public'} className={'text-2xl font-medium text-brand hover:text-brand/80 focus:text-brand/80'}>
               {tCommon('name')}
             </Link>
             {otherLocales.map((locale) => (

@@ -9,6 +9,7 @@ import { Button } from '~/app/components/button';
 import { useCurrentTime } from '~/app/hooks/use-current-time';
 import { ClockIcon } from "~/app/components/icons/clock";
 import { useTranslations } from 'next-intl';
+import { GithubIcon } from "~/app/components/icons/github";
 
 export function Footer() {
   const time = useCurrentTime();
@@ -31,14 +32,22 @@ export function Footer() {
           <div className={'z-20 container mx-auto flex flex-col gap-6 mb-6'}>
             <Card className={'!pb-0 mx-2 sm:mx-0'}>
               <div className={'flex justify-between p-4 lg:p-12 pb-0 md:pb-4'}>
-                {/*<Button*/}
-                {/*  asChild*/}
-                {/*  variant={'solid'}*/}
-                {/*  size={'md'}*/}
-                {/*  className={'rounded-full'}*/}
-                {/*>*/}
-                {/*  <Link href={'mailto:hey@basmensinga.nl'}>{tCommon('cta.contact')}</Link>*/}
-                {/*</Button>*/}
+                <div className={'flex gap-2 items-center justify-center'}>
+                  {/*<Button*/}
+                  {/*  asChild*/}
+                  {/*  variant={'solid'}*/}
+                  {/*  size={'md'}*/}
+                  {/*  className={'rounded-full'}*/}
+                  {/*>*/}
+                  {/*  <Link href={'mailto:hey@basmensinga.nl'}>{tCommon('cta.contact')}</Link>*/}
+                  {/*</Button>*/}
+                  <Link
+                    href={'https://github.com/BMensinga/Portfolio'}
+                    className={'text-ink-muted hover:text-ink-muted/80 focus:text-ink-muted/80'}
+                  >
+                    <GithubIcon />
+                  </Link>
+                </div>
                 <div className={'flex gap-2 items-center justify-center'}>
                   <ClockIcon className={'size-3.5 text-ink-muted'} />
                   <time className={'flex gap-px items-center justify-center text-ink-muted font-normal text-sm'}>

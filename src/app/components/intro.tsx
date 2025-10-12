@@ -10,6 +10,7 @@ import { useMenuBarVisibility } from "~/app/providers/menu-bar-visibility-provid
 import { Button } from "~/app/components/button";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { GithubIcon } from "~/app/components/icons/github";
 
 export function Intro() {
   const ref = useRef(null)

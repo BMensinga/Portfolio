@@ -33,7 +33,7 @@ export function AboutMe() {
             dictu: (chunks) => (
               <Link
                 href={'https://dictu.nl'}
-                className={'font-medium text-brand hover:text-brand/90'}
+                className={'font-medium text-brand hover:text-brand/80 focus:text-brand/80'}
               >
                 {chunks}
               </Link>
