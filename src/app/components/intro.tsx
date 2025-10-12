@@ -40,10 +40,10 @@ export function Intro() {
             </span>
             {t('role')}
           </h1>
-          <h2 className={"text-ink-muted flex flex-wrap items-center gap-3 text-2xl font-medium"}>
+          <h2 className={"text-ink-muted flex flex-wrap items-center gap-x-3 sm:gap-y-3 text-2xl font-medium"}>
             {t('headline.prefix')}
             <span
-              className={"outline-brand/10 flex h-9 w-9 sm:h-12 sm:w-12 rotate-12 items-center justify-center rounded-lg bg-white outline-2 transition-transform duration-150 hover:rotate-0"}
+              className={"outline-brand/10 flex h-9 w-9 sm:h-12 sm:w-12 rotate-12 items-center justify-center rounded-lg bg-white outline-2 transition-transform duration-150 hover:rotate-0 mb-1 sm:mb-0"}
             >
               <Code className={"text-brand h-6 w-6 sm:h-8 sm:w-8 stroke-[2.5]"} />
             </span>
