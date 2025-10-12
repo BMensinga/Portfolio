@@ -26,8 +26,8 @@ export const metadata: Metadata = {
     url: "/",
     images: [
       {
-        url: "/images/profile-pic.webp",
-        alt: "Profile picture of Bas Mensinga"
+        url: "/opengraph-image.jpg",
+        alt: "Image of the portfolio site",
       }
     ]
   }
