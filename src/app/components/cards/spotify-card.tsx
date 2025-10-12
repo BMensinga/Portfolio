@@ -259,7 +259,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
           aria-hidden={'true'}
         />
         <div className={'flex flex-col gap-6'}>
-          <div className={'flex flex-col gap-2'}>
+          <div className={'flex flex-col gap-2 z-10'}>
             <div className={'flex justify-between'}>
               <div className={'w-32 h-32 rounded-lg'}>
                 <AnimatePresence mode={'wait'}>
