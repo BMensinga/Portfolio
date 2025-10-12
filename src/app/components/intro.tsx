@@ -1,16 +1,13 @@
 'use client'
 
 import { Code } from "lucide-react";
-import { Link } from "~/i18n/navigation";
 import { Fog } from "~/app/components/fog";
 import { FogProvider } from "~/app/providers/fog-provider";
 import { useEffect, useRef } from "react";
 import { useInView } from "framer-motion";
 import { useMenuBarVisibility } from "~/app/providers/menu-bar-visibility-provider";
-import { Button } from "~/app/components/button";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { GithubIcon } from "~/app/components/icons/github";
 
 export function Intro() {
   const ref = useRef(null)

@@ -172,7 +172,7 @@ export function Experience({ experience }: ExperienceProps) {
   );
 }
 
-type Translator = (key: string, values?: Record<string, any>) => string;
+type Translator = (key: string, values?: Record<string, string | number | Date>) => string;
 
 const JOB_TYPE_KEYS: Record<TExperienceItem['jobType'], string> = {
   'Full-time': 'jobTypes.fullTime',

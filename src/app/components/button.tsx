@@ -15,7 +15,7 @@ const variantClasses: Record<ButtonVariant, string> = {
   solid:
     'bg-brand text-white hover:bg-brand/90 active:bg-brand/80 disabled:bg-brand/50 w-fit',
   ghost:
-    'bg-transparent text-ink hover:bg-ink/[0.06] active:bg-ink/[0.12] disabled:text-ink-muted font-medium ',
+    'bg-transparent text-ink hover:bg-ink/[0.06] active:bg-ink/[0.12] disabled:text-ink-muted font-medium',
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
@@ -50,7 +50,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const classes = cn(buttonVariants({ variant, size }), className);
 
     if (asChild) {
-      const child = Children.only(children) as ReactElement<any>;
+      const child = Children.only(children) as ReactElement<{ className?: string }>;
 
       return cloneElement(child, {
         ...props,

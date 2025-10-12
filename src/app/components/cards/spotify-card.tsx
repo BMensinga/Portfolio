@@ -6,7 +6,7 @@ import { SkipForwardIcon } from "~/app/components/icons/music-player/skip-forwar
 import { PauseIcon } from "~/app/components/icons/music-player/pause";
 import { PlayIcon } from "~/app/components/icons/music-player/play";
 import { SpotifyIcon } from "~/app/components/icons/music-player/spotify";
-import { useCallback, useEffect, useMemo, useRef, useState, type FocusEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type FocusEvent, type PointerEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Volume, Volume1, Volume2, VolumeX } from "lucide-react";
 import { Link } from "~/i18n/navigation";
@@ -29,6 +29,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
   const [lastVolumeBeforeMute, setLastVolumeBeforeMute] = useState(0.8);
   const [isVolumePopoverVisible, setIsVolumePopoverVisible] = useState(false);
   const isVolumeDraggingRef = useRef(false);
+  const volumeRef = useRef(volume);
   const volumeTrackRef = useRef<HTMLDivElement | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const clipPath = useMemo(
@@ -68,6 +69,10 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
   }, [playableTracksLength]);
 
   useEffect(() => {
+    volumeRef.current = volume;
+  }, [volume]);
+
+  useEffect(() => {
     if (!isPlayable || !playableTracks[trackIndex]?.previewUrl) {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -77,14 +82,14 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
       return;
     }
 
-    const previewUrl = playableTracks[trackIndex].previewUrl!;
+    const previewUrl = playableTracks[trackIndex].previewUrl;
     const previousInstance = audioRef.current;
     if (previousInstance) {
       previousInstance.pause();
     }
 
     const audio = new Audio(previewUrl);
-    audio.volume = Math.min(Math.max(volume, 0), 1);
+    audio.volume = Math.min(Math.max(volumeRef.current, 0), 1);
     audioRef.current = audio;
 
     const advanceTrack = () => {
@@ -121,15 +126,14 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
 
     if (isPlaying) {
       const playPromise = audio.play();
-      if (playPromise) {
-        void playPromise.catch(() => {
-          setIsPlaying(false);
-        });
-      }
-      setIsExpanded(true)
+      playPromise.then(() => {
+        setIsExpanded(true)
+      }).catch(() => {
+        setIsPlaying(false);
+      });
     } else {
       audio.pause();
-      setIsExpanded(false)
+      setIsExpanded(false);
     }
   }, [isPlaying, trackIndex]);
 
@@ -196,7 +200,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
     setVolumeFromRatio(ratio);
   }, [setVolumeFromRatio]);
 
-  const handleVolumePointerDown = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+  const handleVolumePointerDown = useCallback((event: PointerEvent<HTMLDivElement>) => {
     event.preventDefault();
     const target = event.currentTarget;
     target.setPointerCapture(event.pointerId);
@@ -204,12 +208,12 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
     updateVolumeFromClientY(event.clientY);
   }, [updateVolumeFromClientY]);
 
-  const handleVolumePointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+  const handleVolumePointerMove = useCallback((event: PointerEvent<HTMLDivElement>) => {
     if (!event.currentTarget.hasPointerCapture(event.pointerId)) return;
     updateVolumeFromClientY(event.clientY);
   }, [updateVolumeFromClientY]);
 
-  const handleVolumePointerUp = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
+  const handleVolumePointerUp = useCallback((event: PointerEvent<HTMLDivElement>) => {
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
