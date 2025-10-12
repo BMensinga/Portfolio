@@ -48,9 +48,9 @@ export function Intro() {
             </span>
             {t('headline.suffix')}
           </h2>
-          <Button asChild variant={'solid'} size={'md'} className={'rounded-full'}>
-            <Link href={'mailto:hey@basmensinga.nl'}>{tCommon('cta.contact')}</Link>
-          </Button>
+          {/*<Button asChild variant={'solid'} size={'md'} className={'rounded-full'}>*/}
+          {/*  <Link href={'mailto:hey@basmensinga.nl'}>{tCommon('cta.contact')}</Link>*/}
+          {/*</Button>*/}
         </div>
         <Fog />
         <div className={'flex flex-col absolute top-0 h-full w-full'}>
