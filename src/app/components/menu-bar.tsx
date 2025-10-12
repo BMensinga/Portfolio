@@ -2,17 +2,17 @@
 
 import { Globe } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
-import { cn } from "~/app/[locale]/libs/utils";
+import { cn } from "~/app/libs/utils";
 import { Link, usePathname } from "~/i18n/navigation";
-import { useMenuBarVisibility } from "~/app/[locale]/providers/menu-bar-visibility-provider";
+import { useMenuBarVisibility } from "~/app/providers/menu-bar-visibility-provider";
 import { useState } from "react";
-import { useCurrentTime } from "~/app/[locale]/hooks/use-current-time";
-import { ClockIcon } from "~/app/[locale]/components/icons/clock";
-import { WeatherIcon } from "~/app/[locale]/components/icons/weather";
+import { useCurrentTime } from "~/app/hooks/use-current-time";
+import { ClockIcon } from "~/app/components/icons/clock";
+import { WeatherIcon } from "~/app/components/icons/weather";
 import type { WeatherPayload } from "~/server/api/routers/weather";
 import { useLocale, useTranslations } from "next-intl";
 import { routing } from "~/i18n/routing";
-import { Button } from "~/app/[locale]/components/button";
+import { Button } from "~/app/components/button";
 
 type MenuBarProps = {
   weather?: WeatherPayload | null;
@@ -51,7 +51,7 @@ export function MenuBar({ weather }: MenuBarProps) {
       >
         <div className={'flex flex-col sm:flex-row gap-x-4 gap-y-2 justify-between mx-auto'}>
           <div className={'flex justify-between gap-4 grow'}>
-            <Link href={'/'} className={'text-2xl font-medium text-brand hover:text-brand/90'}>
+            <Link href={'/public'} className={'text-2xl font-medium text-brand hover:text-brand/90'}>
               {tCommon('name')}
             </Link>
             {otherLocales.map((locale) => (
@@ -62,7 +62,7 @@ export function MenuBar({ weather }: MenuBarProps) {
                 size={'md'}
               >
                 <Link
-                  href={pathname ?? '/'}
+                  href={pathname ?? '/public'}
                   locale={locale}
                 >
                   {tCommon('switchLocale', { locale })}

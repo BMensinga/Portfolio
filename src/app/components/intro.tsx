@@ -2,12 +2,12 @@
 
 import { Code } from "lucide-react";
 import { Link } from "~/i18n/navigation";
-import { Fog } from "~/app/[locale]/components/fog";
-import { FogProvider } from "~/app/[locale]/providers/fog-provider";
+import { Fog } from "~/app/components/fog";
+import { FogProvider } from "~/app/providers/fog-provider";
 import { useEffect, useRef } from "react";
 import { useInView } from "framer-motion";
-import { useMenuBarVisibility } from "~/app/[locale]/providers/menu-bar-visibility-provider";
-import { Button } from "~/app/[locale]/components/button";
+import { useMenuBarVisibility } from "~/app/providers/menu-bar-visibility-provider";
+import { Button } from "~/app/components/button";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 

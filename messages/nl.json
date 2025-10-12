@@ -5,15 +5,15 @@
     "weatherUnavailable": "—",
     "switchLocale": "{locale, select, en {EN} nl {NL} other {#}}",
     "cta": {
-      "contact": "Bakje koffie doen?"
+      "contact": "Stuur een berichtje"
     }
   },
   "intro": {
     "greeting": "Hoi, ik ben {name}.",
-    "role": "Ik ben software engineer.",
+    "role": "Ik ben een software engineer.",
     "headline": {
       "prefix": "Ik bouw software",
-      "suffix": "die complexe dingen weer eenvoudig maakt."
+      "suffix": "die complexe dingen eenvoudig maakt."
     },
     "profileAlt": "Profielfoto van Bas Mensinga"
   },
@@ -47,23 +47,23 @@
     "sections": {
       "origin": {
         "title": "Waar ik vandaan kom",
-        "body": "Ik ben geboren en getogen in Nederland. Mijn ouders gaven mij en mijn broer de ruimte om dingen zelf uit te zoeken. Ik bracht als kind ontelbare uren achter een scherm door met code en games – achteraf een prima investering."
+        "body": "Ik ben geboren en getogen in Nederland. Mijn vader en moeder hebben allebei hard gewerkt om mij en mijn broer de ruimte te geven om zelf dingen uit te zoeken. Als kind bracht ik véél te veel uren achter een computerscherm door. Ik knutselde vaak met code en games, wat achteraf gezien een behoorlijk goede investering van mijn tijd bleek te zijn."
       },
       "past": {
         "title": "Wat ik eerder deed",
-        "body": "Mijn eerste banen waren niet glamorous. Ik vulde schappen en probeerde van alles, vooral om mensen beter te leren begrijpen. Uiteindelijk verschoof de focus naar technologie: kleine projecten, freelance klussen en ontdekken hoe software het dagelijks werk makkelijker kan maken."
+        "body": "Mijn eerste baantjes waren niet bepaald mooi: vakken vullen en probeerde van alles, wat mij vooral veel leerden over mensen. Uiteindelijk ben ik de techwereld ingerold, bouwde ik kleine projecten en ontdekte ik hoe software het leven (en werk) een stuk eenvoudiger kan maken."
       },
       "present": {
         "title": "Wat ik nu doe",
-        "body": "Tegenwoordig werk ik als medior software engineer bij <dictu>@DICTU</dictu>. Daarnaast experimenteer ik graag met nieuwe tools en libraries en bouw ik prototypes die producten menselijker en eenvoudiger maken."
+        "body": "Op dit moment werk ik als medior software engineer bij <dictu>@DICTU</dictu>. Daarnaast experimenteer ik graag met nieuwe libraries, tools en ideeën. Ik werk het liefst waar code en mensen samenkomen, zodat de tools die ik bouw iemands dag nét wat makkelijker maken."
       },
       "life": {
         "title": "Waar ik nu sta",
-        "body": "Ik woon in Gouda en balanceer werk, hobby's en side-projecten. Als ik niet codeer, ben ik in de sportschool (of mezelf aan het overtuigen om te gaan) of met vrienden en familie."
+        "body": "Ik woon in Gouda en balanceer werk, hobby's en side-projecten. Als ik niet codeer, zit ik in de sportschool (of probeer ik mezelf ervan te overtuigen om te gaan) of ben ik met vrienden en familie."
       },
       "future": {
         "title": "Waar ik naar zoek",
-        "body": "Kansen om impactvolle producten te bouwen met sterke teams. Technologie moet complexiteit wegnemen in plaats van toevoegen – zeker voor vakmensen en mkb-bedrijven. Daar valt nog veel winst te boeken."
+        "body": "Kansen om samen met goede teams impactvolle producten te maken. Technologie hoort complexiteit weg te nemen niet eraan toe te voegen."
       }
     }
   },
@@ -97,7 +97,7 @@
           "softwareEngineer": {
             "title": "Software Engineer",
             "titleDescription": "via Finalist",
-            "description": "Ontwikkel AI Chat- en Assistant-functionaliteit.\nBouw samenwerkende whiteboards met realtime updates.\nOnderhoud de Zalo Mini App voor Simplamo met soepele integraties.\nMaak dashboards rijker met interactieve grafieken en analyses.\nVersterk kernfunctionaliteit om de gebruikerservaring te verbeteren.\nBewaak de consistentie in UI en UX.\nLever robuuste front-ends voor web en mobiel.\nEvalueer technische opties en adviseer de beste oplossing."
+            "description": "Werken aan de volgende iteratie van een landelijk portaal voor agrarische organisaties voor een Nederlandse overheidsorganisatie, met focus op modulariteit, toegankelijkheid en duurzaam onderhoud."
           }
         }
       },
@@ -107,7 +107,7 @@
           "softwareEngineer": {
             "title": "Software Engineer",
             "titleDescription": "",
-            "description": "Ondersteun klantprojecten met moderne front-end tooling en coach teams in best practices."
+            "description": "Als software engineer gewerkt aan projecten voor ziekenhuizen, internationale organisaties. Gewerkt aan het implementeren van nieuwe features en integraties."
           }
         }
       },
@@ -117,12 +117,12 @@
           "juniorDrupalDeveloperPartTime": {
             "title": "Junior Drupal developer",
             "titleDescription": "",
-            "description": "Onderhield Drupal-sites, implementeerde nieuwe features en hielp bij contentmigraties voor klanten."
+            "description": "Als Drupal-developer werken aan projecten voor gemeenten, zorginstanties, non-profits en internationale organisaties."
           },
           "juniorDrupalDeveloperInternship": {
             "title": "Junior Drupal developer",
             "titleDescription": "Stage",
-            "description": "Leerde de basis van Drupal-ontwikkeling en ondersteunde senior developers bij klantopdrachten."
+            "description": "Leerde de basis van Drupal-ontwikkeling en ondersteunde senior developers bij klantopdrachten. Daarnaast werkte ik met andere engineers aan feature delivery, performance optimalisatie en het leren van deployen."
           }
         }
       }

@@ -1,4 +1,4 @@
-import { Card } from "~/app/[locale]/components/cards/card";
+import { Card } from "~/app/components/cards/card";
 import { Link } from "~/i18n/navigation";
 import { useTranslations } from "next-intl";
 

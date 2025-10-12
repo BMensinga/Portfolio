@@ -47,23 +47,23 @@
     "sections": {
       "origin": {
         "title": "Where I'm From",
-        "body": "I was born and raised in the Netherlands. My parents worked hard to give me and my brother the room to figure things out. I spent countless hours behind a screen tinkering with code and games—time well spent, in hindsight."
+        "body": "I was born and raised in the Netherlands. My dad and mom both worked hard to give me and my brother the space to figure things out on our own. I spent way too many hours behind a computer screen as a kid, tinkering with code and games which in hindsight turned out to be a pretty good investment of time."
       },
       "past": {
         "title": "What I Used to Do",
-        "body": "My first jobs weren't glamorous. I stocked shelves and tried a mix of roles that taught me a lot about people. Eventually I leaned into tech—building side projects, taking on freelance work, and seeing how software could make daily work simpler."
+        "body": "My first jobs weren’t glamorous, I stocked shelves and tried out a few things that taught me more about people. Eventually, I leaned into tech building small projects, doing side gigs, and exploring how software could make life (and work) simpler."
       },
       "present": {
         "title": "What I Do Now",
-        "body": "Today, I'm a mid-level software engineer working at <dictu>@DICTU</dictu>. On the side I experiment with new tools and libraries, building prototypes that make products more human and less cumbersome."
+        "body": "Today, I'm a mid-level software engineer working at <dictu>@DICTU</dictu>. On the side, I like to experiment with new libraries, tools, and building out ideas. I like working where code meets people, making tools that don’t just ‘run’ but make someone’s day easier."
       },
       "life": {
         "title": "Where I'm At Now",
-        "body": "I live in Gouda, balancing work, hobbies, and side projects. When I'm not coding, you'll usually find me at the gym (or convincing myself to go), or spending time with friends and family."
+        "body": "I live in Gouda, balancing work, hobbies, and side projects. When I’m not coding, you’ll usually find me at the gym (or trying to convince myself to go), or hanging out with friends and family."
       },
       "future": {
         "title": "What I'm Looking For",
-        "body": "Opportunities to build thoughtful products with great teams. I believe software should remove friction, not add it—especially for trades and small businesses. There's still plenty of old tooling waiting to be improved."
+        "body": "Opportunities to create impactful products with talented teams. I believe in using tech to cut through complexity, not add to it."
       }
     }
   },
@@ -97,7 +97,7 @@
           "softwareEngineer": {
             "title": "Software Engineer",
             "titleDescription": "via Finalist",
-            "description": "Develop AI Chat and Assistant features.\nDevelop collaborative whiteboards with real-time updates.\nMaintain the Zalo Mini App for Simplamo with seamless integration.\nBuild charting and analytics widgets to elevate dashboards.\nImprove core functionality to sharpen UX.\nGuard consistency across UI/UX touchpoints.\nShip resilient frontends for web and mobile.\nEvaluate technical options and recommend the best path."
+            "description": "Engineering the next iteration of a nationwide agricultural compliance portal for a Dutch government agency: focusing modularity, accessibility, and long-term maintainability."
           }
         }
       },
@@ -107,7 +107,7 @@
           "softwareEngineer": {
             "title": "Software Engineer",
             "titleDescription": "",
-            "description": "Supporting client projects with modern front-end tooling while coaching teams on best practices."
+            "description": "Served as a software engineer across hospital and international organization projects, working on feature delivery and integrations implementation."
           }
         }
       },
@@ -117,12 +117,12 @@
           "juniorDrupalDeveloperPartTime": {
             "title": "Junior Drupal developer",
             "titleDescription": "",
-            "description": "Helped maintain Drupal sites, implemented new features, and assisted with content migrations for clients."
+            "description": "Working as drupal developer on several projects for a different set of clients including local municipalities, hospitals, non-profits, and for international organizations."
           },
           "juniorDrupalDeveloperInternship": {
             "title": "Junior Drupal developer",
             "titleDescription": "Internship",
-            "description": "Learned the fundamentals of Drupal development, supporting senior engineers on customer projects."
+            "description": "Learned the fundamentals of Drupal development, supporting more senior developers on customer projects. Worked with other engineers while shipping Drupal features, tuning performance, and learning deployment practices."
           }
         }
       }
@@ -134,14 +134,12 @@
       "hhs": {
         "alt": "Logo of The Hague University of Applied Sciences",
         "degree": "Bachelor's degree",
-        "degreeDescription": "Informatics (Software Engineering)",
-        "description": "Specialised in building scalable web applications with a focus on user-centric design and maintainability."
+        "degreeDescription": "Computer Science (Software Engineering)"
       },
       "glr": {
         "alt": "Logo of the Grafisch Lyceum Rotterdam",
         "degree": "MBO level 4",
-        "degreeDescription": "Application and Media Developer",
-        "description": "Studied design and front-end fundamentals while gaining hands-on experience with real client projects."
+        "degreeDescription": "Application and Media Developer"
       }
     }
   }

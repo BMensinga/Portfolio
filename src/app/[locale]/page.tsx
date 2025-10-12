@@ -1,18 +1,18 @@
 import { HydrateClient } from "~/trpc/server";
-import { MenuBar } from "~/app/[locale]/components/menu-bar";
-import { SpotifyCard } from "~/app/[locale]/components/cards/spotify-card";
-import { Card } from "~/app/[locale]/components/cards/card";
-import { Experience, type TExperience } from "~/app/[locale]/components/cards/experience";
-import { Education, type TEducation } from "~/app/[locale]/components/cards/education";
-import { Footer } from "~/app/[locale]/components/footer";
-import { Intro } from "~/app/[locale]/components/intro";
-import { LinkedinCard } from "~/app/[locale]/components/cards/linkedin-card";
+import { MenuBar } from "~/app/components/menu-bar";
+import { SpotifyCard } from "~/app/components/cards/spotify-card";
+import { Card } from "~/app/components/cards/card";
+import { Experience, type TExperience } from "~/app/components/cards/experience";
+import { Education, type TEducation } from "~/app/components/cards/education";
+import { Footer } from "~/app/components/footer";
+import { Intro } from "~/app/components/intro";
+import { LinkedinCard } from "~/app/components/cards/linkedin-card";
 import { createCaller } from "~/server/api/root";
 import { env } from "~/env";
 import type { WeatherPayload } from "~/server/api/routers/weather";
 import type { DeezerPlaylistPayload } from "~/server/api/routers/deezer";
-import { AboutMe } from "~/app/[locale]/components/cards/about-me";
-import { Stack } from "~/app/[locale]/components/cards/stack";
+import { AboutMe } from "~/app/components/cards/about-me";
+import { Stack } from "~/app/components/cards/stack";
 import { getTranslations } from "next-intl/server";
 
 type ExperienceTemplate = {
@@ -135,7 +135,6 @@ export default async function Home() {
     degreeDescription: tEducation(`schools.${template.key}.degreeDescription`),
     startDate: template.startDate,
     endDate: template.endDate,
-    description: tEducation(`schools.${template.key}.description`) || undefined,
   }));
 
   const caller = createCaller({

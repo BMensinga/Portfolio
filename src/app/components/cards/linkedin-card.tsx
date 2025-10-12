@@ -1,12 +1,12 @@
 'use client'
 
-import { LinkedinIcon } from '~/app/[locale]/components/icons/linkedin';
+import { LinkedinIcon } from '~/app/components/icons/linkedin';
 import { Link } from "~/i18n/navigation";
-import { ExternalLinkIcon } from '~/app/[locale]/components/icons/external-link';
-import { Card } from '~/app/[locale]/components/cards/card';
+import { ExternalLinkIcon } from '~/app/components/icons/external-link';
+import { Card } from '~/app/components/cards/card';
 import { motion } from 'motion/react';
 import { useMemo, useState } from 'react';
-import { cn } from '~/app/[locale]/libs/utils';
+import { cn } from '~/app/libs/utils';
 import Image from "next/image";
 import { useTranslations } from 'next-intl';
 

@@ -4,7 +4,7 @@ import { type Metadata } from "next";
 import { Poppins } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
-import { MenuBarVisibilityProvider } from "~/app/[locale]/providers/menu-bar-visibility-provider";
+import { MenuBarVisibilityProvider } from "~/app/providers/menu-bar-visibility-provider";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import type { ReactNode } from "react";
 import { routing } from "~/i18n/routing";

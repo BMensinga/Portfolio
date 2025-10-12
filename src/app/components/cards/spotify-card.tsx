@@ -1,16 +1,16 @@
 'use client'
 
-import { Card } from "~/app/[locale]/components/cards/card";
-import { SkipBackwardIcon } from "~/app/[locale]/components/icons/music-player/skip-backward";
-import { SkipForwardIcon } from "~/app/[locale]/components/icons/music-player/skip-forward";
-import { PauseIcon } from "~/app/[locale]/components/icons/music-player/pause";
-import { PlayIcon } from "~/app/[locale]/components/icons/music-player/play";
-import { SpotifyIcon } from "~/app/[locale]/components/icons/music-player/spotify";
+import { Card } from "~/app/components/cards/card";
+import { SkipBackwardIcon } from "~/app/components/icons/music-player/skip-backward";
+import { SkipForwardIcon } from "~/app/components/icons/music-player/skip-forward";
+import { PauseIcon } from "~/app/components/icons/music-player/pause";
+import { PlayIcon } from "~/app/components/icons/music-player/play";
+import { SpotifyIcon } from "~/app/components/icons/music-player/spotify";
 import { useCallback, useEffect, useMemo, useRef, useState, type FocusEvent } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Volume, Volume1, Volume2, VolumeX } from "lucide-react";
 import { Link } from "~/i18n/navigation";
-import { cn } from "~/app/[locale]/libs/utils";
+import { cn } from "~/app/libs/utils";
 import type { DeezerPlaylistPayload } from "~/server/api/routers/deezer";
 import { useTranslations } from "next-intl";
 
@@ -259,8 +259,8 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
           aria-hidden={'true'}
         />
         <div className={'flex flex-col gap-6'}>
-          <div className={'flex justify-between'}>
-            <div className={'flex flex-col gap-2 z-10'}>
+          <div className={'flex flex-col gap-2'}>
+            <div className={'flex justify-between'}>
               <div className={'w-32 h-32 rounded-lg'}>
                 <AnimatePresence mode={'wait'}>
                   {artworkSrc ? (
@@ -289,65 +289,65 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
                   )}
                 </AnimatePresence>
               </div>
-              <div className={'flex flex-col'}>
-                <AnimatePresence mode={'wait'}>
-                  <motion.p
-                    key={activeTrack?.id ?? playlist?.id ?? 'no-track'}
-                    className={cn('text-sm font-semibold text-ink',
-                      isExpanded ? 'text-white' : 'text-ink'
-                    )}
-                    initial={{ opacity: 0, y: transitionDirection === 'next' ? 12 : -12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: transitionDirection === 'next' ? -12 : 12 }}
-                    transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-                  >
-                    {activeTrack?.name ?? playlist?.name ?? t('playlistUnavailable')}
-                  </motion.p>
-                </AnimatePresence>
-                <AnimatePresence mode={'wait'}>
-                  <motion.span
-                    key={`${activeTrack?.id ?? playlist?.id ?? 'no-track'}-artists`}
-                    className={cn('text-sm font-normal text-ink-muted',
-                      isExpanded ? 'text-white/80' : 'text-ink-muted'
-                    )}
-                    initial={{ opacity: 0, y: transitionDirection === 'next' ? 8 : -8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: transitionDirection === 'next' ? -8 : 8 }}
-                    transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
-                  >
-                    {trackArtists}
-                  </motion.span>
-                </AnimatePresence>
-                {!isPlayable && (
-                  <span className={cn('text-xs font-medium text-ink-muted', isExpanded ? 'text-white/70' : 'text-ink-muted')}>
+              <Link
+                href={linkHref}
+                className={cn(
+                  'relative flex h-14 w-14 items-center justify-center rounded-[14px] outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent bg-black transition-opacity',
+                  !hasPlaylist && 'pointer-events-none opacity-60',
+                )}
+                onMouseEnter={() => setIsExpanded(true)}
+                onFocus={() => setIsExpanded(true)}
+                onMouseLeave={() => !isPlaying && setIsExpanded(false)}
+                onBlur={() => !isPlaying && setIsExpanded(false)}
+                aria-disabled={!hasPlaylist}
+                title={hasPlaylist ? t('openOnSpotify') : t('playlistUnavailable')}
+              >
+                <motion.div
+                  className={'absolute inset-0 -z-0'}
+                  initial={false}
+                  animate={{ opacity: isExpanded ? 1 : 0 }}
+                  transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
+                />
+                <div className={'z-10 pointer-events-none'}>
+                  <SpotifyIcon />
+                </div>
+              </Link>
+            </div>
+            <div className={'flex flex-col'}>
+              <AnimatePresence mode={'wait'}>
+                <motion.p
+                  key={activeTrack?.id ?? playlist?.id ?? 'no-track'}
+                  className={cn('text-sm font-semibold text-ink',
+                    isExpanded ? 'text-white' : 'text-ink'
+                  )}
+                  initial={{ opacity: 0, y: transitionDirection === 'next' ? 12 : -12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: transitionDirection === 'next' ? -12 : 12 }}
+                  transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                >
+                  {activeTrack?.name ?? playlist?.name ?? t('playlistUnavailable')}
+                </motion.p>
+              </AnimatePresence>
+              <AnimatePresence mode={'wait'}>
+                <motion.span
+                  key={`${activeTrack?.id ?? playlist?.id ?? 'no-track'}-artists`}
+                  className={cn('text-sm font-normal text-ink-muted',
+                    isExpanded ? 'text-white/80' : 'text-ink-muted'
+                  )}
+                  initial={{ opacity: 0, y: transitionDirection === 'next' ? 8 : -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: transitionDirection === 'next' ? -8 : 8 }}
+                  transition={{ duration: 0.2, ease: [0.4, 0, 0.2, 1] }}
+                >
+                  {trackArtists}
+                </motion.span>
+              </AnimatePresence>
+              {!isPlayable && (
+                <span className={cn('text-xs font-medium text-ink-muted', isExpanded ? 'text-white/70' : 'text-ink-muted')}>
                     {t('previewUnavailable')}
                   </span>
-                )}
-              </div>
-            </div>
-            <Link
-              href={linkHref}
-              className={cn(
-                'relative flex h-14 w-14 items-center justify-center rounded-[14px] outline-none focus-visible:ring-2 focus-visible:ring-white/60 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent bg-black transition-opacity',
-                !hasPlaylist && 'pointer-events-none opacity-60',
               )}
-              onMouseEnter={() => setIsExpanded(true)}
-              onFocus={() => setIsExpanded(true)}
-              onMouseLeave={() => !isPlaying && setIsExpanded(false)}
-              onBlur={() => !isPlaying && setIsExpanded(false)}
-              aria-disabled={!hasPlaylist}
-              title={hasPlaylist ? t('openOnSpotify') : t('playlistUnavailable')}
-            >
-              <motion.div
-                className={'absolute inset-0 -z-0'}
-                initial={false}
-                animate={{ opacity: isExpanded ? 1 : 0 }}
-                transition={{ duration: 0.15, ease: [0.4, 0, 0.2, 1] }}
-              />
-              <div className={'z-10 pointer-events-none'}>
-                <SpotifyIcon />
-              </div>
-            </Link>
+            </div>
           </div>
           <div className={'flex items-center justify-center gap-4'}>
             <div className={'bg-white/50 backdrop-blur-2xl rounded-full border border-border flex items-center gap-6 py-2 px-8 justify-center z-10'}>
@@ -422,7 +422,7 @@ export function SpotifyCard({ playlist }: SpotifyCardProps) {
               </motion.button>
               <AnimatePresence>
                 {isVolumePopoverVisible && (
-                  <div className={'absolute bottom-full pb-3'}>
+                  <div className={'absolute bottom-full pb-3 z-20'}>
                     <motion.div
                       key={'volume-slider'}
                       initial={{ opacity: 0, y: 12, scale: 0.96 }}

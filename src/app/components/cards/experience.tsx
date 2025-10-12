@@ -2,9 +2,9 @@
 
 import Image from 'next/image';
 import { ChevronsDownUpIcon, ChevronsUpDownIcon } from 'lucide-react';
-import { cn } from '~/app/[locale]/libs/utils';
+import { cn } from '~/app/libs/utils';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { Button } from '~/app/[locale]/components/button';
+import { Button } from '~/app/components/button';
 import { useFormatter, useTranslations } from 'next-intl';
 
 export type TExperienceItem = {

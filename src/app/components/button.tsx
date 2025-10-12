@@ -1,6 +1,6 @@
 import { Children, cloneElement, forwardRef } from 'react';
 import type { ButtonHTMLAttributes, ReactElement } from 'react';
-import { cn } from '~/app/[locale]/libs/utils';
+import { cn } from '~/app/libs/utils';
 
 type ButtonVariant = 'solid' | 'ghost';
 type ButtonSize = 'md' | 'icon';

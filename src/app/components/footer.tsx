@@ -1,13 +1,13 @@
 'use client'
 
-import { FogProvider } from '~/app/[locale]/providers/fog-provider';
-import { Card } from '~/app/[locale]/components/cards/card';
+import { FogProvider } from '~/app/providers/fog-provider';
+import { Card } from '~/app/components/cards/card';
 import { Link } from "~/i18n/navigation";
-import { Fog } from '~/app/[locale]/components/fog';
+import { Fog } from '~/app/components/fog';
 import { motion, useScroll, useTransform } from 'motion/react';
-import { Button } from '~/app/[locale]/components/button';
-import { useCurrentTime } from '~/app/[locale]/hooks/use-current-time';
-import { ClockIcon } from "~/app/[locale]/components/icons/clock";
+import { Button } from '~/app/components/button';
+import { useCurrentTime } from '~/app/hooks/use-current-time';
+import { ClockIcon } from "~/app/components/icons/clock";
 import { useTranslations } from 'next-intl';
 
 export function Footer() {
