@@ -1,7 +1,7 @@
 import { Buffer } from 'node:buffer';
 
 import { TRPCError } from '@trpc/server';
-import { Cache, Duration, Effect } from 'effect';
+import { Cache, Duration, Effect, Option } from 'effect';
 import { z } from 'zod';
 
 import { authorizedProcedure, createTRPCRouter } from '~/server/api/trpc';
@@ -44,6 +44,7 @@ type SpotifyTrack = {
 };
 
 type SpotifyPlaylistData = {
+  snapshotId: string | null;
   info: {
     id: string;
     name: string;
@@ -128,10 +129,15 @@ const fetchSpotifyJson = <T>(
     return json;
   });
 
+type DerivedPlaylistCacheEntry = {
+  snapshotId: string | null;
+  playlist: DeezerPlaylistPayload;
+};
+
 const spotifyDerivedPlaylistCache = Effect.runSync(
-  Cache.make<string, DeezerPlaylistPayload, TRPCError>({
+  Cache.make<string, DerivedPlaylistCacheEntry, TRPCError>({
     capacity: 4,
-    timeToLive: Duration.minutes(10),
+    timeToLive: Duration.infinity,
     lookup: (spotifyPlaylistId) => derivePlaylistFromSpotify(spotifyPlaylistId),
   }),
 );
@@ -165,7 +171,27 @@ export const deezerRouter = createTRPCRouter({
         });
       }
 
-      return Effect.runPromise(spotifyDerivedPlaylistCache.get(spotifyPlaylistId));
+      return Effect.runPromise(
+        Effect.gen(function* (_) {
+          const cachedEntryOption = yield* _(spotifyDerivedPlaylistCache.getOption(spotifyPlaylistId));
+
+          if (Option.isSome(cachedEntryOption)) {
+            const cachedEntry = cachedEntryOption.value;
+            const latestSnapshotId = yield* _(fetchSpotifyPlaylistSnapshotId(spotifyPlaylistId));
+
+            if (latestSnapshotId !== cachedEntry.snapshotId) {
+              yield* _(spotifyDerivedPlaylistCache.invalidate(spotifyPlaylistId));
+              const refreshedEntry = yield* _(spotifyDerivedPlaylistCache.get(spotifyPlaylistId));
+              return refreshedEntry.playlist;
+            }
+
+            return cachedEntry.playlist;
+          }
+
+          const entry = yield* _(spotifyDerivedPlaylistCache.get(spotifyPlaylistId));
+          return entry.playlist;
+        }),
+      );
     }),
 });
 
@@ -192,7 +218,7 @@ const derivePlaylistFromSpotify = (playlistId: string) =>
       } satisfies DeezerTrackPayload;
     });
 
-    return {
+    const playlist = {
       id: spotifyData.info.id,
       name: spotifyData.info.name,
       description: spotifyData.info.description,
@@ -202,6 +228,11 @@ const derivePlaylistFromSpotify = (playlistId: string) =>
       totalTracks: tracks.length,
       tracks,
     } satisfies DeezerPlaylistPayload;
+
+    return {
+      snapshotId: spotifyData.snapshotId,
+      playlist,
+    } satisfies DerivedPlaylistCacheEntry;
   });
 
 const fetchSpotifyAccessToken = () =>
@@ -280,6 +311,23 @@ const fetchSpotifyAccessToken = () =>
     return token;
   });
 
+const fetchSpotifyPlaylistSnapshotId = (playlistId: string) =>
+  Effect.gen(function* (_) {
+    const token = yield* _(spotifyTokenCache.get('token'));
+    const json = yield* _(
+      fetchSpotifyJson<{ snapshot_id?: string | null }>(
+        `/playlists/${encodeURIComponent(playlistId)}?fields=snapshot_id`,
+        token,
+        {
+          label: 'Spotify playlist snapshot',
+          notFoundMessage: 'Spotify playlist not found',
+        },
+      ),
+    );
+
+    return json.snapshot_id?.trim() ?? null;
+  });
+
 const fetchSpotifyPlaylistData = (playlistId: string): Effect.Effect<SpotifyPlaylistData, TRPCError> =>
   Effect.gen(function* (_) {
     const token = yield* _(spotifyTokenCache.get('token'));
@@ -314,6 +362,7 @@ const fetchSpotifyPlaylistData = (playlistId: string): Effect.Effect<SpotifyPlay
     const imageUrl = playlistJson.images?.[0]?.url ?? null;
 
     return {
+      snapshotId: playlistJson.snapshot_id?.trim() ?? null,
       info: {
         id: playlistJson.id,
         name: playlistJson.name,
@@ -518,6 +567,7 @@ type SpotifyPlaylistResponse = {
   name?: string;
   description?: string | null;
   external_urls?: { spotify?: string };
+  snapshot_id?: string | null;
   images?: Array<{ url?: string | null }>;
   owner?: { display_name?: string | null } | null;
   tracks?: SpotifyPlaylistTracksPage;
