@@ -13,7 +13,6 @@ import type { WeatherPayload } from "~/server/api/routers/weather";
 import { useLocale, useTranslations } from "next-intl";
 import { routing } from "~/i18n/routing";
 import { Button } from "~/app/components/button";
-
 type MenuBarProps = {
   weather?: WeatherPayload | null;
 };
@@ -102,8 +101,8 @@ export function MenuBar({ weather }: MenuBarProps) {
                   : 'bg-surface-alt'
               )}>
                 <WeatherIcon kind={weather?.kind ?? 'clear'} className={'size-3.5 text-ink-muted'} />
-                <div className={'flex flex-col leading-none'}>
-                  <span className={'text-ink-muted font-normal tabular-nums text-xs sm:text-sm'}>
+                <div className={'flex flex-col leading-none w-8 items-center'}>
+                  <span className={'text-ink-muted font-normal tabular-nums text-xs sm:text-sm overflow-hidden text-ellipsis w-full'}>
                     {weather ? `${Math.round(weather.temperature ?? 0)}°C` : tCommon('weatherUnavailable')}
                   </span>
                 </div>

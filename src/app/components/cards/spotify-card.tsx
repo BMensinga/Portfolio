@@ -1,14 +1,14 @@
 'use client'
 
+import { useCallback, useEffect, useMemo, useRef, useState, type FocusEvent, type PointerEvent } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import { Volume, Volume1, Volume2, VolumeX } from "lucide-react";
 import { Card } from "~/app/components/cards/card";
 import { SkipBackwardIcon } from "~/app/components/icons/music-player/skip-backward";
 import { SkipForwardIcon } from "~/app/components/icons/music-player/skip-forward";
 import { PauseIcon } from "~/app/components/icons/music-player/pause";
 import { PlayIcon } from "~/app/components/icons/music-player/play";
 import { SpotifyIcon } from "~/app/components/icons/music-player/spotify";
-import { useCallback, useEffect, useMemo, useRef, useState, type FocusEvent, type PointerEvent } from "react";
-import { AnimatePresence, motion } from "motion/react";
-import { Volume, Volume1, Volume2, VolumeX } from "lucide-react";
 import { Link } from "~/i18n/navigation";
 import { cn } from "~/app/libs/utils";
 import type { DeezerPlaylistPayload } from "~/server/api/routers/music";

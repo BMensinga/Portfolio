@@ -163,6 +163,7 @@ const buildWeatherUrl = (query: WeatherQuery) => {
     timezone: query.timezone,
     ...UNIT_MAPPING[query.units],
   }).toString();
+
   return url.toString();
 };
 

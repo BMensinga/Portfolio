@@ -1,19 +1,22 @@
+import { Suspense } from "react";
+
 import { HydrateClient } from "~/trpc/server";
 import { MenuBar } from "~/app/components/menu-bar";
 import { SpotifyCard } from "~/app/components/cards/spotify-card";
+import { SpotifyCardSkeleton } from "~/app/components/cards/spotify-card-skeleton";
 import { Card } from "~/app/components/cards/card";
 import { Experience, type TExperience } from "~/app/components/cards/experience";
 import { Education, type TEducation } from "~/app/components/cards/education";
 import { Footer } from "~/app/components/footer";
 import { Intro } from "~/app/components/intro";
 import { LinkedinCard } from "~/app/components/cards/linkedin-card";
+import { AboutMe } from "~/app/components/cards/about-me";
+import { Stack } from "~/app/components/cards/stack";
+import { getTranslations } from "next-intl/server";
 import { createCaller } from "~/server/api/root";
 import { env } from "~/env";
 import type { WeatherPayload } from "~/server/api/routers/weather";
 import type { DeezerPlaylistPayload } from "~/server/api/routers/music";
-import { AboutMe } from "~/app/components/cards/about-me";
-import { Stack } from "~/app/components/cards/stack";
-import { getTranslations } from "next-intl/server";
 
 type ExperienceTemplate = {
   key: string;
@@ -138,33 +141,55 @@ export default async function Home() {
   }));
 
   const caller = createCaller({
-    headers: new Headers([
-      ['Authorization', `Bearer ${env.TRPC_AUTH_TOKEN}`],
-    ]),
+    headers: new Headers([['Authorization', `Bearer ${env.TRPC_AUTH_TOKEN}`]]),
   });
 
-  let weather: WeatherPayload | null = null;
-  let playlist: DeezerPlaylistPayload | null = null;
+  const weatherPromise = caller.weather.current({
+    latitude: 52.0182,
+    longitude: 4.687,
+    timezone: 'auto',
+    units: 'metric',
+  });
 
-  try {
-    weather = await caller.weather.current({
-      latitude: 52.0182,
-      longitude: 4.687,
-      units: 'metric',
-    });
-  } catch (error) {
-    console.error('[weather] failed to load weather data', error);
+  async function MenuBarWithWeather({
+    weatherPromise,
+  }: {
+    weatherPromise: Promise<WeatherPayload>;
+  }) {
+    let weather: WeatherPayload | null = null;
+
+    try {
+      weather = await weatherPromise;
+    } catch (error) {
+      console.error('[weather] failed to load weather data', error);
+    }
+
+    return <MenuBar weather={weather} />;
   }
 
-  try {
-    playlist = await caller.music.playlist();
-  } catch (error) {
-    console.error('[deezer] failed to load playlist data', error);
+  const playlistPromise = caller.music.playlist();
+
+  async function SpotifyCardWithPlaylist({
+    playlistPromise,
+  }: {
+    playlistPromise: Promise<DeezerPlaylistPayload>;
+  }) {
+    let playlist: DeezerPlaylistPayload | null = null;
+
+    try {
+      playlist = await playlistPromise;
+    } catch (error) {
+      console.error('[deezer] failed to load playlist data', error);
+    }
+
+    return <SpotifyCard playlist={playlist} />;
   }
 
   return (
     <HydrateClient>
-      <MenuBar weather={weather} />
+      <Suspense fallback={<MenuBar weather={null} />}>
+        <MenuBarWithWeather weatherPromise={weatherPromise} />
+      </Suspense>
       <main>
         <section>
           <Intro />
@@ -176,7 +201,9 @@ export default async function Home() {
             </section>
             <div className={"col-span-3 lg:col-span-1 flex flex-col sm:flex-row lg:flex-col gap-6 sm:gap-12"}>
               <section className={'w-full h-full'}>
-                <SpotifyCard playlist={playlist} />
+                <Suspense fallback={<SpotifyCardSkeleton />}>
+                  <SpotifyCardWithPlaylist playlistPromise={playlistPromise} />
+                </Suspense>
               </section>
               <section className={'w-full h-full'}>
                 <LinkedinCard />
