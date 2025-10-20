@@ -2,10 +2,10 @@
 
 import Image from 'next/image';
 import { ChevronsDownUpIcon, ChevronsUpDownIcon } from 'lucide-react';
-import { cn } from '~/app/libs/utils';
+import { cn, formatDate, formatDuration } from '~/app/libs/utils';
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Button } from '~/app/components/button';
-import { useFormatter, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 
 export type TExperienceItem = {
   title: string;
@@ -37,7 +37,6 @@ export function Experience({ experience }: ExperienceProps) {
     [experience.experienceItems],
   );
   const t = useTranslations('experience');
-  const formatter = useFormatter();
 
   useEffect(() => {
     if (!isExpanded) {
@@ -94,17 +93,9 @@ export function Experience({ experience }: ExperienceProps) {
       <div className={'flex flex-col'} id={detailsId}>
         {experience.experienceItems.map((item, index) => {
           const isLast = index === experience.experienceItems.length - 1;
-          const start = formatter.dateTime(item.startDate, {
-            month: 'short',
-            year: 'numeric',
-          });
-          const end = item.endDate
-            ? formatter.dateTime(item.endDate, {
-                month: 'short',
-                year: 'numeric',
-              })
-            : t('current');
-          const duration = formatDurationLabel(t, item.startDate, item.endDate);
+          const start = formatDate(item.startDate);
+          const end = item.endDate ? formatDate(item.endDate) : t('current');
+          const duration = formatDuration(t, item.startDate, item.endDate);
           const jobTypeLabel = getJobTypeLabel(t, item.jobType);
 
           return (
@@ -184,41 +175,4 @@ const JOB_TYPE_KEYS: Record<TExperienceItem['jobType'], string> = {
 
 function getJobTypeLabel(t: Translator, jobType: TExperienceItem['jobType']) {
   return t(JOB_TYPE_KEYS[jobType]);
-}
-
-function formatDurationLabel(t: Translator, start: Date, end?: Date) {
-  const endDate = end ?? new Date();
-
-  if (endDate < start) {
-    return t('duration.lessThanMonth');
-  }
-
-  let totalMonths =
-    (endDate.getFullYear() - start.getFullYear()) * 12 +
-    (endDate.getMonth() - start.getMonth());
-
-  if (endDate.getDate() < start.getDate()) {
-    totalMonths -= 1;
-  }
-
-  totalMonths = Math.max(totalMonths, 0);
-
-  const years = Math.floor(totalMonths / 12);
-  const months = totalMonths % 12;
-
-  const parts: string[] = [];
-
-  if (years > 0) {
-    parts.push(t('duration.years', { count: years }));
-  }
-
-  if (months > 0) {
-    parts.push(t('duration.months', { count: months }));
-  }
-
-  if (parts.length === 0) {
-    return t('duration.lessThanMonth');
-  }
-
-  return parts.join(' ');
 }

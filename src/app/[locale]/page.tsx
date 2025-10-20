@@ -10,7 +10,7 @@ import { LinkedinCard } from "~/app/components/cards/linkedin-card";
 import { createCaller } from "~/server/api/root";
 import { env } from "~/env";
 import type { WeatherPayload } from "~/server/api/routers/weather";
-import type { DeezerPlaylistPayload } from "~/server/api/routers/deezer";
+import type { DeezerPlaylistPayload } from "~/server/api/routers/music";
 import { AboutMe } from "~/app/components/cards/about-me";
 import { Stack } from "~/app/components/cards/stack";
 import { getTranslations } from "next-intl/server";
@@ -157,7 +157,7 @@ export default async function Home() {
   }
 
   try {
-    playlist = await caller.deezer.playlist();
+    playlist = await caller.music.playlist();
   } catch (error) {
     console.error('[deezer] failed to load playlist data', error);
   }

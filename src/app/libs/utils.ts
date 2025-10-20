@@ -11,11 +11,13 @@ export const formatDate = (date: Date) =>
     year: 'numeric',
   }).format(date);
 
-export const formatDuration = (start: Date, end?: Date) => {
+type Translator = (key: string, values?: Record<string, string | number | Date>) => string;
+
+export const formatDuration = (t: Translator, start: Date, end?: Date) => {
   const endDate = end ?? new Date();
 
   if (endDate < start) {
-    return '0 mth';
+    return t('duration.lessThanMonth');
   }
 
   let totalMonths =
@@ -34,15 +36,15 @@ export const formatDuration = (start: Date, end?: Date) => {
   const parts: string[] = [];
 
   if (years > 0) {
-    parts.push(`${years} yr`);
+    parts.push(t('duration.years', { count: years }));
   }
 
   if (months > 0) {
-    parts.push(`${months} mth`);
+    parts.push(t('duration.months', { count: months }));
   }
 
   if (parts.length === 0) {
-    return '< 1 mth';
+    return t('duration.lessThanMonth');
   }
 
   return parts.join(' ');

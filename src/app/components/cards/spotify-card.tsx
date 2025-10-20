@@ -11,7 +11,7 @@ import { AnimatePresence, motion } from "motion/react";
 import { Volume, Volume1, Volume2, VolumeX } from "lucide-react";
 import { Link } from "~/i18n/navigation";
 import { cn } from "~/app/libs/utils";
-import type { DeezerPlaylistPayload } from "~/server/api/routers/deezer";
+import type { DeezerPlaylistPayload } from "~/server/api/routers/music";
 import { useTranslations } from "next-intl";
 
 type SpotifyCardProps = {

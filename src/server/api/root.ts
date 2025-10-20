@@ -1,4 +1,4 @@
-import { deezerRouter } from "~/server/api/routers/deezer";
+import { musicRouter } from "~/server/api/routers/music";
 import { weatherRouter } from "~/server/api/routers/weather";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
@@ -9,7 +9,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
  */
 export const appRouter = createTRPCRouter({
   weather: weatherRouter,
-  deezer: deezerRouter,
+  music: musicRouter,
 });
 
 // export type definition of API

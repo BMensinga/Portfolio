@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useFormatter } from "next-intl";
+import { formatDate } from "~/app/libs/utils";
 
 export type TEducation = {
   school: string
@@ -17,15 +17,8 @@ type EducationProps = {
 }
 
 export function Education({ education }: EducationProps) {
-  const formatter = useFormatter();
-  const start = formatter.dateTime(education.startDate, {
-    month: 'short',
-    year: 'numeric',
-  });
-  const end = formatter.dateTime(education.endDate, {
-    month: 'short',
-    year: 'numeric',
-  });
+  const start = formatDate(education.startDate);
+  const end = formatDate(education.endDate);
 
   return (
     <div className={'flex flex-col gap-2 rounded-lg bg-white p-4'}>
