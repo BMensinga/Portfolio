@@ -21,10 +21,10 @@ export const formatDuration = (t: Translator, start: Date, end?: Date) => {
   }
 
   let totalMonths =
-    (endDate.getUTCFullYear() - start.getUTCFullYear()) * 12 +
-    (endDate.getUTCMonth() - start.getUTCMonth());
+    (endDate.getFullYear() - start.getFullYear()) * 12 +
+    (endDate.getMonth() - start.getMonth());
 
-  if (endDate.getUTCDate() < start.getUTCDate()) {
+  if (endDate.getDate() < start.getDate()) {
     totalMonths -= 1;
   }
 

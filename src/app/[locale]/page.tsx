@@ -107,8 +107,6 @@ export default async function Home() {
     getTranslations('education'),
   ]);
 
-  const generatedAt = Date.now();
-
   const experiences: TExperience[] = EXPERIENCE_TEMPLATES.map((template) => ({
     company: template.company,
     logo: template.logo,
@@ -222,7 +220,6 @@ export default async function Home() {
                     { experiences.map((item, index) => (
                       <Experience
                         experience={item}
-                        generatedAt={generatedAt}
                         key={`exp-list-${item.company}-${index}`}
                       />
                     ))}

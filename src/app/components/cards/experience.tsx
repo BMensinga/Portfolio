@@ -25,10 +25,9 @@ export type TExperience = {
 
 type ExperienceProps = {
   experience: TExperience;
-  generatedAt: number;
 };
 
-export function Experience({ experience, generatedAt }: ExperienceProps) {
+export function Experience({ experience }: ExperienceProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [descriptionHeights, setDescriptionHeights] = useState<number[]>([]);
   const descriptionRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -37,7 +36,6 @@ export function Experience({ experience, generatedAt }: ExperienceProps) {
     () => experience.experienceItems.some((item) => Boolean(item.description)),
     [experience.experienceItems],
   );
-  const currentDate = useMemo(() => new Date(generatedAt), [generatedAt]);
   const t = useTranslations('experience');
 
   useEffect(() => {
@@ -97,7 +95,7 @@ export function Experience({ experience, generatedAt }: ExperienceProps) {
           const isLast = index === experience.experienceItems.length - 1;
           const start = formatDate(item.startDate);
           const end = item.endDate ? formatDate(item.endDate) : t('current');
-          const duration = formatDuration(t, item.startDate, item.endDate ?? currentDate);
+          const duration = formatDuration(t, item.startDate, item.endDate);
           const jobTypeLabel = getJobTypeLabel(t, item.jobType);
 
           return (
