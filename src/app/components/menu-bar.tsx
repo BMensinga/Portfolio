@@ -19,8 +19,8 @@ type MenuBarProps = {
 
 export function MenuBar({ weather }: MenuBarProps) {
   const time = useCurrentTime();
-  const hours = time.getHours().toString().padStart(2, '0');
-  const minutes = time.getMinutes().toString().padStart(2, '0');
+  const hours = time ? time.getHours().toString().padStart(2, '0') : '--';
+  const minutes = time ? time.getMinutes().toString().padStart(2, '0') : '--';
   const tCommon = useTranslations('common');
   const pathname = usePathname();
   const currentLocale = useLocale();

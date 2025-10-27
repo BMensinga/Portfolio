@@ -7,12 +7,14 @@ type UseCurrentTimeOptions = {
 };
 
 export function useCurrentTime({ intervalMs = 60_000 }: UseCurrentTimeOptions = {}) {
-  const [time, setTime] = useState(() => new Date());
-  const intervalRef = useRef<number>(null);
-  const timeoutRef = useRef<number>(null);
+  const [time, setTime] = useState<Date | null>(null);
+  const intervalRef = useRef<number | null>(null);
+  const timeoutRef = useRef<number | null>(null);
 
   useEffect(() => {
     const update = () => setTime(new Date());
+
+    update();
 
     const current = new Date();
     const delay = intervalMs - (current.getSeconds() * 1_000 + current.getMilliseconds());

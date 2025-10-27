@@ -13,7 +13,7 @@ const MenuBarVisibilityContext = createContext<MenuBarVisibilityContextValue | u
 );
 
 export function MenuBarVisibilityProvider({ children }: { children: ReactNode }) {
-  const [isIntroInView, setIsIntroInView] = useState(true);
+  const [isIntroInView, setIsIntroInView] = useState(false);
 
   const setIntroInView = useCallback((value: boolean) => {
     setIsIntroInView((current) => (current === value ? current : value));

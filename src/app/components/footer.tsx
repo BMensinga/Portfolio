@@ -12,8 +12,8 @@ import { GithubIcon } from "~/app/components/icons/github";
 
 export function Footer() {
   const time = useCurrentTime();
-  const hours = time.getHours().toString().padStart(2, '0');
-  const minutes = time.getMinutes().toString().padStart(2, '0');
+  const hours = time ? time.getHours().toString().padStart(2, '0') : '--';
+  const minutes = time ? time.getMinutes().toString().padStart(2, '0') : '--';
   const tCommon = useTranslations('common');
 
   const { scrollYProgress } = useScroll();
