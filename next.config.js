@@ -3,15 +3,17 @@
  * for Docker builds.
  */
 import "./src/env.js";
-import createNextIntlPlugin from 'next-intl/plugin';
+import createNextIntlPlugin from "next-intl/plugin";
 
 const withNextIntl = createNextIntlPlugin();
 
 /** @type {import("next").NextConfig} */
 const config = {
   images: {
-    remotePatterns: [new URL('https://cdn-images.dzcdn.net/images/cover/**/**')],
-  }
+    remotePatterns: [
+      new URL("https://cdn-images.dzcdn.net/images/cover/**/**"),
+    ],
+  },
 };
 
 export default withNextIntl(config);

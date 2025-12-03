@@ -6,18 +6,21 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const formatDate = (date: Date) =>
-  new Intl.DateTimeFormat('nl-NL', {
-    month: 'short',
-    year: 'numeric',
+  new Intl.DateTimeFormat("nl-NL", {
+    month: "short",
+    year: "numeric",
   }).format(date);
 
-type Translator = (key: string, values?: Record<string, string | number | Date>) => string;
+type Translator = (
+  key: string,
+  values?: Record<string, string | number | Date>,
+) => string;
 
 export const formatDuration = (t: Translator, start: Date, end?: Date) => {
   const endDate = end ?? new Date();
 
   if (endDate < start) {
-    return t('duration.lessThanMonth');
+    return t("duration.lessThanMonth");
   }
 
   let totalMonths =
@@ -36,16 +39,16 @@ export const formatDuration = (t: Translator, start: Date, end?: Date) => {
   const parts: string[] = [];
 
   if (years > 0) {
-    parts.push(t('duration.years', { count: years }));
+    parts.push(t("duration.years", { count: years }));
   }
 
   if (months > 0) {
-    parts.push(t('duration.months', { count: months }));
+    parts.push(t("duration.months", { count: months }));
   }
 
   if (parts.length === 0) {
-    return t('duration.lessThanMonth');
+    return t("duration.lessThanMonth");
   }
 
-  return parts.join(' ');
+  return parts.join(" ");
 };

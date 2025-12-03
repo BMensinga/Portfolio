@@ -1,4 +1,4 @@
-export type WeatherUnits = 'metric' | 'imperial';
+export type WeatherUnits = "metric" | "imperial";
 
 export type WeatherQuery = {
   latitude: number;
@@ -8,16 +8,16 @@ export type WeatherQuery = {
 };
 
 export type WeatherKind =
-  | 'clear'
-  | 'mostly-clear'
-  | 'partly-cloudy'
-  | 'overcast'
-  | 'fog'
-  | 'drizzle'
-  | 'rain'
-  | 'freezing-rain'
-  | 'snow'
-  | 'thunderstorm';
+  | "clear"
+  | "mostly-clear"
+  | "partly-cloudy"
+  | "overcast"
+  | "fog"
+  | "drizzle"
+  | "rain"
+  | "freezing-rain"
+  | "snow"
+  | "thunderstorm";
 
 export type WeatherPayload = {
   temperature: number | null;

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { useCurrentTime } from "~/app/hooks/use-current-time";
 
@@ -24,16 +24,26 @@ export function ClockIcon({ className }: { className?: string }) {
       className={`lucide lucide-clock-icon lucide-clock ${className}`}
     >
       <circle cx="12" cy="12" r="10" />
-      <line x1="12" y1="12" x2="12" y2="6" style={{
-          transformOrigin: '12px 12px',
+      <line
+        x1="12"
+        y1="12"
+        x2="12"
+        y2="6"
+        style={{
+          transformOrigin: "12px 12px",
           transform: `rotate(${minuteAngle}deg)`,
-          transition: 'transform 0.6s ease-in-out',
+          transition: "transform 0.6s ease-in-out",
         }}
       />
-      <line x1="12" y1="12" x2="12" y2="8" style={{
-          transformOrigin: '12px 12px',
+      <line
+        x1="12"
+        y1="12"
+        x2="12"
+        y2="8"
+        style={{
+          transformOrigin: "12px 12px",
           transform: `rotate(${hourAngle}deg)`,
-          transition: 'transform 0.6s ease-in-out',
+          transition: "transform 0.6s ease-in-out",
         }}
       />
     </svg>

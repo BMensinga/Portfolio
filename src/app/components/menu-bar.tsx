@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { Globe } from "lucide-react";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
@@ -19,12 +19,14 @@ type MenuBarProps = {
 
 export function MenuBar({ weather }: MenuBarProps) {
   const time = useCurrentTime();
-  const hours = time ? time.getHours().toString().padStart(2, '0') : '--';
-  const minutes = time ? time.getMinutes().toString().padStart(2, '0') : '--';
-  const tCommon = useTranslations('common');
+  const hours = time ? time.getHours().toString().padStart(2, "0") : "--";
+  const minutes = time ? time.getMinutes().toString().padStart(2, "0") : "--";
+  const tCommon = useTranslations("common");
   const pathname = usePathname();
   const currentLocale = useLocale();
-  const otherLocales = routing.locales.filter((locale) => locale !== currentLocale);
+  const otherLocales = routing.locales.filter(
+    (locale) => locale !== currentLocale,
+  );
 
   const { scrollYProgress } = useScroll();
   const { isIntroInView } = useMenuBarVisibility();
@@ -36,74 +38,92 @@ export function MenuBar({ weather }: MenuBarProps) {
   });
 
   return (
-    <header className={'w-full fixed z-30 pointer-events-none flex justify-center'}>
+    <header
+      className={"pointer-events-none fixed z-30 flex w-full justify-center"}
+    >
       <motion.div
         className={cn(
-          'transition-all duration-300 m-0 py-4 px-4 2xl:mx-auto border-border pointer-events-auto grow',
+          "border-border pointer-events-auto m-0 grow px-4 py-4 transition-all duration-300 2xl:mx-auto",
           isScrolled
-            ? 'max-w-screen-lg mt-2 rounded-xl py-3 mx-2 border'
-            : 'max-w-[100dvw] border-b',
-          isIntroInView
-            ? 'bg-white/25 backdrop-blur-2xl'
-            : 'bg-white'
+            ? "mx-2 mt-2 max-w-screen-lg rounded-xl border py-3"
+            : "max-w-[100dvw] border-b",
+          isIntroInView ? "bg-white/25 backdrop-blur-2xl" : "bg-white",
         )}
       >
-        <div className={'flex flex-col sm:flex-row gap-x-4 gap-y-2 justify-between mx-auto'}>
-          <div className={'flex justify-between gap-4 grow'}>
-            <Link href={'/'} className={'text-2xl font-medium text-brand hover:text-brand/80 focus:text-brand/80'}>
-              {tCommon('name')}
+        <div
+          className={
+            "mx-auto flex flex-col justify-between gap-x-4 gap-y-2 sm:flex-row"
+          }
+        >
+          <div className={"flex grow justify-between gap-4"}>
+            <Link
+              href={"/"}
+              className={
+                "text-brand hover:text-brand/80 focus:text-brand/80 text-2xl font-medium"
+              }
+            >
+              {tCommon("name")}
             </Link>
             {otherLocales.map((locale) => (
-              <Button
-                key={locale}
-                asChild
-                variant={'solid'}
-                size={'md'}
-              >
-                <Link
-                  href={pathname ?? '/'}
-                  locale={locale}
-                >
-                  {tCommon('switchLocale', { locale })}
+              <Button key={locale} asChild variant={"solid"} size={"md"}>
+                <Link href={pathname ?? "/"} locale={locale}>
+                  {tCommon("switchLocale", { locale })}
                 </Link>
               </Button>
             ))}
           </div>
-          <div className={'flex gap-2 justify-between sm:justify-start'}>
-            <div className={cn(
-              'rounded-lg flex gap-2 py-0.5 px-1.5 items-center justify-center transition-all duration-300',
-              isIntroInView
-                ? 'bg-white/50'
-                : 'bg-surface-alt'
-            )}>
-              <Globe className={'size-3.5 text-ink-muted'}/>
-              <span className={'text-ink-muted font-normal text-xs sm:text-sm'}>{tCommon('location')}</span>
+          <div className={"flex justify-between gap-2 sm:justify-start"}>
+            <div
+              className={cn(
+                "flex items-center justify-center gap-2 rounded-lg px-1.5 py-0.5 transition-all duration-300",
+                isIntroInView ? "bg-white/50" : "bg-surface-alt",
+              )}
+            >
+              <Globe className={"text-ink-muted size-3.5"} />
+              <span className={"text-ink-muted text-xs font-normal sm:text-sm"}>
+                {tCommon("location")}
+              </span>
             </div>
-            <div className={'w-px py-1 hidden sm:flex'}><span className={'bg-divider rounded-full h-full w-px'} /></div>
-            <div className={'flex gap-2'}>
-              <div className={cn(
-                'rounded-lg flex gap-2 py-0.5 px-1.5 items-center justify-center transition-all duration-300',
-                isIntroInView
-                  ? 'bg-white/50'
-                  : 'bg-surface-alt'
-              )}>
-                <ClockIcon className={'size-3.5 text-ink-muted'}/>
-                <time className={'flex gap-px items-center justify-center text-ink-muted font-normal text-xs sm:text-sm'}>
-                  <span className={'tabular-nums'}>{hours}</span>
-                  <span className={'time-colon pb-0.5'}>:</span>
-                  <span className={'tabular-nums'}>{minutes}</span>
+            <div className={"hidden w-px py-1 sm:flex"}>
+              <span className={"bg-divider h-full w-px rounded-full"} />
+            </div>
+            <div className={"flex gap-2"}>
+              <div
+                className={cn(
+                  "flex items-center justify-center gap-2 rounded-lg px-1.5 py-0.5 transition-all duration-300",
+                  isIntroInView ? "bg-white/50" : "bg-surface-alt",
+                )}
+              >
+                <ClockIcon className={"text-ink-muted size-3.5"} />
+                <time
+                  className={
+                    "text-ink-muted flex items-center justify-center gap-px text-xs font-normal sm:text-sm"
+                  }
+                >
+                  <span className={"tabular-nums"}>{hours}</span>
+                  <span className={"time-colon pb-0.5"}>:</span>
+                  <span className={"tabular-nums"}>{minutes}</span>
                 </time>
               </div>
-              <div className={cn(
-                'rounded-lg flex gap-2 py-0.5 px-1.5 items-center justify-center transition-all duration-300',
-                isIntroInView
-                  ? 'bg-white/50'
-                  : 'bg-surface-alt'
-              )}>
-                <WeatherIcon kind={weather?.kind ?? 'clear'} className={'size-3.5 text-ink-muted'} />
-                <div className={'flex flex-col leading-none w-8 items-center'}>
-                  <span className={'text-ink-muted font-normal tabular-nums text-xs sm:text-sm overflow-hidden text-ellipsis w-full'}>
-                    {weather ? `${Math.round(weather.temperature ?? 0)}°C` : tCommon('weatherUnavailable')}
+              <div
+                className={cn(
+                  "flex items-center justify-center gap-2 rounded-lg px-1.5 py-0.5 transition-all duration-300",
+                  isIntroInView ? "bg-white/50" : "bg-surface-alt",
+                )}
+              >
+                <WeatherIcon
+                  kind={weather?.kind ?? "clear"}
+                  className={"text-ink-muted size-3.5"}
+                />
+                <div className={"flex w-8 flex-col items-center leading-none"}>
+                  <span
+                    className={
+                      "text-ink-muted w-full overflow-hidden text-xs font-normal text-ellipsis tabular-nums sm:text-sm"
+                    }
+                  >
+                    {weather
+                      ? `${Math.round(weather.temperature ?? 0)}°C`
+                      : tCommon("weatherUnavailable")}
                   </span>
                 </div>
               </div>
@@ -112,5 +132,5 @@ export function MenuBar({ weather }: MenuBarProps) {
         </div>
       </motion.div>
     </header>
-  )
+  );
 }

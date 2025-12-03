@@ -15,16 +15,20 @@ import { JavaIcon } from "~/app/components/icons/stack/java";
 import { useTranslations } from "next-intl";
 
 export function Stack() {
-  const t = useTranslations('stack');
+  const t = useTranslations("stack");
 
   return (
     <Card>
-      <div className={'flex flex-col gap-6'}>
-        <h3 className={'text-ink text-xl font-medium'}>{t('title')}</h3>
-        <p className={'text-ink-muted text-sm font-normal'}>
-          {t('description')}
+      <div className={"flex flex-col gap-6"}>
+        <h3 className={"text-ink text-xl font-medium"}>{t("title")}</h3>
+        <p className={"text-ink-muted text-sm font-normal"}>
+          {t("description")}
         </p>
-        <div className={'flex flex-wrap gap-4 rounded-lg bg-white p-4 items-center'}>
+        <div
+          className={
+            "flex flex-wrap items-center gap-4 rounded-lg bg-white p-4"
+          }
+        >
           <TypescriptIcon />
           <ReactIcon />
           <NextjsIcon />

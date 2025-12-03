@@ -1,18 +1,28 @@
-'use client'
+"use client";
 
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import type { ReactNode } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
+import type { ReactNode } from "react";
 
 type MenuBarVisibilityContextValue = {
   isIntroInView: boolean;
   setIntroInView: (value: boolean) => void;
 };
 
-const MenuBarVisibilityContext = createContext<MenuBarVisibilityContextValue | undefined>(
-  undefined,
-);
+const MenuBarVisibilityContext = createContext<
+  MenuBarVisibilityContextValue | undefined
+>(undefined);
 
-export function MenuBarVisibilityProvider({ children }: { children: ReactNode }) {
+export function MenuBarVisibilityProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [isIntroInView, setIsIntroInView] = useState(false);
 
   const setIntroInView = useCallback((value: boolean) => {
@@ -38,7 +48,9 @@ export function useMenuBarVisibility() {
   const context = useContext(MenuBarVisibilityContext);
 
   if (!context) {
-    throw new Error('useMenuBarVisibility must be used within a MenuBarVisibilityProvider');
+    throw new Error(
+      "useMenuBarVisibility must be used within a MenuBarVisibilityProvider",
+    );
   }
 
   return context;

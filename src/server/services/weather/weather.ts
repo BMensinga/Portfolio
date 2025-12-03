@@ -1,54 +1,64 @@
-import { TRPCError } from '@trpc/server';
-import { Cache, Duration, Effect } from 'effect';
+import { TRPCError } from "@trpc/server";
+import { Cache, Duration, Effect } from "effect";
 
-import type { WeatherKind, WeatherPayload, WeatherQuery, WeatherUnits } from './types';
+import type {
+  WeatherKind,
+  WeatherPayload,
+  WeatherQuery,
+  WeatherUnits,
+} from "./types";
 
-const OPEN_METEO_BASE_URL = 'https://api.open-meteo.com/v1/forecast';
+const OPEN_METEO_BASE_URL = "https://api.open-meteo.com/v1/forecast";
 
 const WEATHER_KIND_BY_CODE: Record<number, WeatherKind> = {
-  0: 'clear',
-  1: 'mostly-clear',
-  2: 'partly-cloudy',
-  3: 'overcast',
-  45: 'fog',
-  48: 'fog',
-  51: 'drizzle',
-  53: 'drizzle',
-  55: 'drizzle',
-  56: 'drizzle',
-  57: 'drizzle',
-  61: 'rain',
-  63: 'rain',
-  65: 'rain',
-  66: 'freezing-rain',
-  67: 'freezing-rain',
-  71: 'snow',
-  73: 'snow',
-  75: 'snow',
-  77: 'snow',
-  80: 'rain',
-  81: 'rain',
-  82: 'rain',
-  85: 'snow',
-  86: 'snow',
-  95: 'thunderstorm',
-  96: 'thunderstorm',
-  99: 'thunderstorm',
+  0: "clear",
+  1: "mostly-clear",
+  2: "partly-cloudy",
+  3: "overcast",
+  45: "fog",
+  48: "fog",
+  51: "drizzle",
+  53: "drizzle",
+  55: "drizzle",
+  56: "drizzle",
+  57: "drizzle",
+  61: "rain",
+  63: "rain",
+  65: "rain",
+  66: "freezing-rain",
+  67: "freezing-rain",
+  71: "snow",
+  73: "snow",
+  75: "snow",
+  77: "snow",
+  80: "rain",
+  81: "rain",
+  82: "rain",
+  85: "snow",
+  86: "snow",
+  95: "thunderstorm",
+  96: "thunderstorm",
+  99: "thunderstorm",
 } as const;
 
 const UNIT_MAPPING = {
   metric: {
-    temperature_unit: 'celsius',
-    windspeed_unit: 'kmh',
+    temperature_unit: "celsius",
+    windspeed_unit: "kmh",
   },
   imperial: {
-    temperature_unit: 'fahrenheit',
-    windspeed_unit: 'mph',
+    temperature_unit: "fahrenheit",
+    windspeed_unit: "mph",
   },
 } as const satisfies Record<WeatherUnits, Record<string, string>>;
 
 const serializeQuery = (query: WeatherQuery) =>
-  JSON.stringify([query.latitude, query.longitude, query.timezone, query.units]);
+  JSON.stringify([
+    query.latitude,
+    query.longitude,
+    query.timezone,
+    query.units,
+  ]);
 
 const deserializeQuery = (key: string): WeatherQuery => {
   const [latitude, longitude, timezone, units] = JSON.parse(key) as [
@@ -86,8 +96,8 @@ const fetchWeather = (query: WeatherQuery) =>
       return yield* _(
         Effect.fail(
           new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'No current weather data for the provided coordinates',
+            code: "NOT_FOUND",
+            message: "No current weather data for the provided coordinates",
           }),
         ),
       );
@@ -123,8 +133,8 @@ const requestCurrentWeather = (query: WeatherQuery) =>
         try: () => fetch(buildWeatherUrl(query)),
         catch: (cause) =>
           new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to reach Open-Meteo',
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to reach Open-Meteo",
             cause,
           }),
       }),
@@ -134,7 +144,7 @@ const requestCurrentWeather = (query: WeatherQuery) =>
       return yield* _(
         Effect.fail(
           new TRPCError({
-            code: 'BAD_REQUEST',
+            code: "BAD_REQUEST",
             message: `Open-Meteo responded with status ${response.status}`,
           }),
         ),
@@ -146,8 +156,8 @@ const requestCurrentWeather = (query: WeatherQuery) =>
         try: () => response.json() as Promise<OpenMeteoResponse>,
         catch: (cause) =>
           new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to parse weather response',
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to parse weather response",
             cause,
           }),
       }),
@@ -159,7 +169,7 @@ const buildWeatherUrl = (query: WeatherQuery) => {
   url.search = new URLSearchParams({
     latitude: query.latitude.toString(),
     longitude: query.longitude.toString(),
-    current_weather: 'true',
+    current_weather: "true",
     timezone: query.timezone,
     ...UNIT_MAPPING[query.units],
   }).toString();
@@ -169,8 +179,8 @@ const buildWeatherUrl = (query: WeatherQuery) => {
 
 const mapWeatherCode = (code: number | null): WeatherKind => {
   if (code == null) {
-    return 'clear';
+    return "clear";
   }
 
-  return WEATHER_KIND_BY_CODE[code] ?? 'clear';
+  return WEATHER_KIND_BY_CODE[code] ?? "clear";
 };

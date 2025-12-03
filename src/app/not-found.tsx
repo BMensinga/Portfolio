@@ -4,5 +4,5 @@ import { getLocale } from "next-intl/server";
 export default async function NotFound() {
   const locale = await getLocale();
 
-  redirect({ href: '/', locale: locale ?? 'en'});
+  redirect({ href: "/", locale: locale ?? "en" });
 }

@@ -97,13 +97,13 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 const baseProcedure = t.procedure.use(timingMiddleware);
 
 const authMiddleware = t.middleware(({ ctx, next }) => {
-  const authHeader = ctx.headers.get('authorization');
-  const token = authHeader?.startsWith('Bearer ')
-    ? authHeader.slice('Bearer '.length).trim()
+  const authHeader = ctx.headers.get("authorization");
+  const token = authHeader?.startsWith("Bearer ")
+    ? authHeader.slice("Bearer ".length).trim()
     : null;
 
   if (!token || token !== env.TRPC_AUTH_TOKEN) {
-    throw new TRPCError({ code: 'UNAUTHORIZED' });
+    throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
   return next();

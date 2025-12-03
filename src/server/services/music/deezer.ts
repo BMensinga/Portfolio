@@ -1,10 +1,10 @@
-import { TRPCError } from '@trpc/server';
-import { Cache, Duration, Effect } from 'effect';
+import { TRPCError } from "@trpc/server";
+import { Cache, Duration, Effect } from "effect";
 
-import type { DeezerTrackPayload, SpotifyTrack } from './types';
-import { normalizeString } from './utils';
+import type { DeezerTrackPayload, SpotifyTrack } from "./types";
+import { normalizeString } from "./utils";
 
-const DEEZER_API_BASE = 'https://api.deezer.com';
+const DEEZER_API_BASE = "https://api.deezer.com";
 
 type DeezerTracklistResponse = {
   data?: DeezerTrack[];
@@ -52,20 +52,26 @@ export const matchSpotifyTracksWithDeezer = (tracks: SpotifyTrack[]) =>
     { concurrency: 6 },
   );
 
-const buildDeezerSearchKey = (track: SpotifyTrack) => JSON.stringify({ name: track.name, artists: track.artists });
+const buildDeezerSearchKey = (track: SpotifyTrack) =>
+  JSON.stringify({ name: track.name, artists: track.artists });
 
 const lookupDeezerTrack = ({ name, artists }: DeezerTrackSearchKey) =>
   Effect.gen(function* (_) {
-    const primaryArtist = artists[0] ?? '';
-    const query = primaryArtist ? `artist:"${primaryArtist}" track:"${name}"` : `track:"${name}"`;
+    const primaryArtist = artists[0] ?? "";
+    const query = primaryArtist
+      ? `artist:"${primaryArtist}" track:"${name}"`
+      : `track:"${name}"`;
 
     const response = yield* _(
       Effect.tryPromise({
-        try: () => fetch(`${DEEZER_API_BASE}/search?q=${encodeURIComponent(query)}&limit=5`),
+        try: () =>
+          fetch(
+            `${DEEZER_API_BASE}/search?q=${encodeURIComponent(query)}&limit=5`,
+          ),
         catch: (cause) =>
           new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to reach Deezer search API',
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to reach Deezer search API",
             cause,
           }),
       }),
@@ -75,7 +81,7 @@ const lookupDeezerTrack = ({ name, artists }: DeezerTrackSearchKey) =>
       return yield* _(
         Effect.fail(
           new TRPCError({
-            code: 'BAD_REQUEST',
+            code: "BAD_REQUEST",
             message: `Deezer search failed with status ${response.status}`,
           }),
         ),
@@ -87,8 +93,8 @@ const lookupDeezerTrack = ({ name, artists }: DeezerTrackSearchKey) =>
         try: () => response.json(),
         catch: (cause) =>
           new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to parse Deezer search response',
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to parse Deezer search response",
             cause,
           }),
       }),
@@ -112,7 +118,9 @@ const lookupDeezerTrack = ({ name, artists }: DeezerTrackSearchKey) =>
       }
 
       const candidateArtists = buildArtistList(candidate).map(normalizeString);
-      return normalizedArtists.some((artist) => candidateArtists.includes(artist));
+      return normalizedArtists.some((artist) =>
+        candidateArtists.includes(artist),
+      );
     });
 
     const chosen = preferred ?? candidates[0];

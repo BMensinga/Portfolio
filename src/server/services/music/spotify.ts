@@ -1,11 +1,11 @@
-import { Buffer } from 'node:buffer';
+import { Buffer } from "node:buffer";
 
-import { TRPCError } from '@trpc/server';
-import { Cache, Duration, Effect } from 'effect';
+import { TRPCError } from "@trpc/server";
+import { Cache, Duration, Effect } from "effect";
 
-import { env } from '~/env';
+import { env } from "~/env";
 
-import type { SpotifyPlaylistData, SpotifyTrack } from './types';
+import type { SpotifyPlaylistData, SpotifyTrack } from "./types";
 
 type SpotifyPlaylistResponse = {
   id?: string;
@@ -35,9 +35,10 @@ type SpotifyPlaylistTrackItem = {
   } | null;
 };
 
-const SPOTIFY_API_BASE = 'https://api.spotify.com/v1';
+const SPOTIFY_API_BASE = "https://api.spotify.com/v1";
 
-const resolveSpotifyUrl = (url: string) => (url.startsWith('http') ? url : `${SPOTIFY_API_BASE}${url}`);
+const resolveSpotifyUrl = (url: string) =>
+  url.startsWith("http") ? url : `${SPOTIFY_API_BASE}${url}`;
 
 const fetchSpotifyJson = <T>(
   url: string,
@@ -55,7 +56,7 @@ const fetchSpotifyJson = <T>(
           }),
         catch: (cause) =>
           new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
+            code: "INTERNAL_SERVER_ERROR",
             message: `Failed to reach ${options.label}`,
             cause,
           }),
@@ -66,7 +67,7 @@ const fetchSpotifyJson = <T>(
       return yield* _(
         Effect.fail(
           new TRPCError({
-            code: 'NOT_FOUND',
+            code: "NOT_FOUND",
             message: options.notFoundMessage,
           }),
         ),
@@ -77,24 +78,24 @@ const fetchSpotifyJson = <T>(
       return yield* _(
         Effect.fail(
           new TRPCError({
-            code: 'BAD_REQUEST',
+            code: "BAD_REQUEST",
             message: `${options.label} failed with status ${response.status}`,
           }),
         ),
       );
     }
 
-    const json = (yield* _(
+    const json = yield* _(
       Effect.tryPromise({
         try: () => response.json() as Promise<T>,
         catch: (cause) =>
           new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
+            code: "INTERNAL_SERVER_ERROR",
             message: `Failed to parse ${options.label}`,
             cause,
           }),
       }),
-    ));
+    );
 
     return json;
   });
@@ -116,29 +117,33 @@ const fetchSpotifyAccessToken = () =>
       return yield* _(
         Effect.fail(
           new TRPCError({
-            code: 'PRECONDITION_FAILED',
-            message: 'Spotify client credentials are not configured',
+            code: "PRECONDITION_FAILED",
+            message: "Spotify client credentials are not configured",
           }),
         ),
       );
     }
 
-    const basicAuth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+    const basicAuth = Buffer.from(`${clientId}:${clientSecret}`).toString(
+      "base64",
+    );
     const response = yield* _(
       Effect.tryPromise({
         try: () =>
-          fetch('https://accounts.spotify.com/api/token', {
-            method: 'POST',
+          fetch("https://accounts.spotify.com/api/token", {
+            method: "POST",
             headers: {
               Authorization: `Basic ${basicAuth}`,
-              'Content-Type': 'application/x-www-form-urlencoded',
+              "Content-Type": "application/x-www-form-urlencoded",
             },
-            body: new URLSearchParams({ grant_type: 'client_credentials' }).toString(),
+            body: new URLSearchParams({
+              grant_type: "client_credentials",
+            }).toString(),
           }),
         catch: (cause) =>
           new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to reach Spotify token endpoint',
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to reach Spotify token endpoint",
             cause,
           }),
       }),
@@ -148,7 +153,7 @@ const fetchSpotifyAccessToken = () =>
       return yield* _(
         Effect.fail(
           new TRPCError({
-            code: 'BAD_REQUEST',
+            code: "BAD_REQUEST",
             message: `Spotify token request failed with status ${response.status}`,
           }),
         ),
@@ -157,12 +162,11 @@ const fetchSpotifyAccessToken = () =>
 
     const json = (yield* _(
       Effect.tryPromise({
-        try: () =>
-          response.json() as Promise<{ access_token?: string }>,
+        try: () => response.json() as Promise<{ access_token?: string }>,
         catch: (cause) =>
           new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Failed to parse Spotify token response',
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Failed to parse Spotify token response",
             cause,
           }),
       }),
@@ -173,8 +177,8 @@ const fetchSpotifyAccessToken = () =>
       return yield* _(
         Effect.fail(
           new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Spotify token response did not include an access token',
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Spotify token response did not include an access token",
           }),
         ),
       );
@@ -195,7 +199,7 @@ const collectSpotifyTrackPages = (nextUrl: string | null, token: string) =>
     while (cursor) {
       const pageJson: SpotifyPlaylistTracksPage = yield* _(
         fetchSpotifyJson<SpotifyPlaylistTracksPage>(cursor, token, {
-          label: 'Spotify playlist page',
+          label: "Spotify playlist page",
         }),
       );
 
@@ -206,11 +210,13 @@ const collectSpotifyTrackPages = (nextUrl: string | null, token: string) =>
     return tracks;
   });
 
-const extractSpotifyTracks = (items: SpotifyPlaylistTrackItem[]): SpotifyTrack[] =>
+const extractSpotifyTracks = (
+  items: SpotifyPlaylistTrackItem[],
+): SpotifyTrack[] =>
   items
     .map((item) => {
       const track = item?.track;
-      if (!track || track.is_local || track.type !== 'track') {
+      if (!track || track.is_local || track.type !== "track") {
         return null;
       }
 
@@ -235,14 +241,14 @@ const extractSpotifyTracks = (items: SpotifyPlaylistTrackItem[]): SpotifyTrack[]
 
 export const fetchSpotifyPlaylistSnapshotId = (playlistId: string) =>
   Effect.gen(function* (_) {
-    const token = yield* _(spotifyTokenCache.get('token'));
+    const token = yield* _(spotifyTokenCache.get("token"));
     const json = yield* _(
       fetchSpotifyJson<{ snapshot_id?: string | null }>(
         `/playlists/${encodeURIComponent(playlistId)}?fields=snapshot_id`,
         token,
         {
-          label: 'Spotify playlist snapshot',
-          notFoundMessage: 'Spotify playlist not found',
+          label: "Spotify playlist snapshot",
+          notFoundMessage: "Spotify playlist not found",
         },
       ),
     );
@@ -252,14 +258,14 @@ export const fetchSpotifyPlaylistSnapshotId = (playlistId: string) =>
 
 export const fetchSpotifyPlaylistData = (playlistId: string) =>
   Effect.gen(function* (_) {
-    const token = yield* _(spotifyTokenCache.get('token'));
+    const token = yield* _(spotifyTokenCache.get("token"));
     const playlistJson = yield* _(
       fetchSpotifyJson<SpotifyPlaylistResponse>(
         `/playlists/${encodeURIComponent(playlistId)}`,
         token,
         {
-          label: 'Spotify playlist endpoint',
-          notFoundMessage: 'Spotify playlist not found',
+          label: "Spotify playlist endpoint",
+          notFoundMessage: "Spotify playlist not found",
         },
       ),
     );
@@ -268,8 +274,8 @@ export const fetchSpotifyPlaylistData = (playlistId: string) =>
       return yield* _(
         Effect.fail(
           new TRPCError({
-            code: 'INTERNAL_SERVER_ERROR',
-            message: 'Spotify playlist response missing expected fields',
+            code: "INTERNAL_SERVER_ERROR",
+            message: "Spotify playlist response missing expected fields",
           }),
         ),
       );
@@ -278,7 +284,9 @@ export const fetchSpotifyPlaylistData = (playlistId: string) =>
     const tracks: SpotifyTrack[] = [];
     tracks.push(...extractSpotifyTracks(playlistJson.tracks?.items ?? []));
 
-    const additionalTracks = yield* _(collectSpotifyTrackPages(playlistJson.tracks?.next ?? null, token));
+    const additionalTracks = yield* _(
+      collectSpotifyTrackPages(playlistJson.tracks?.next ?? null, token),
+    );
     tracks.push(...additionalTracks);
 
     const imageUrl = playlistJson.images?.[0]?.url ?? null;

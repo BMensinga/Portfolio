@@ -102,7 +102,7 @@ const fogImages: FogImage[] = [
     src: "/images/fog/fog5.webp",
     exit: "left",
     i: 15,
-  }
+  },
 ];
 
 export function Fog() {
@@ -118,12 +118,17 @@ export function Fog() {
 
   return (
     <>
-      { shouldReduceMotion ? (
+      {shouldReduceMotion ? (
         <div className="fog-container">
           {imagesToShow.map(({ id, src, i, exit }) => (
             <div
               key={id}
-              style={{ "--i": i, x: exit === "left" ? "100%" : "-100%" } as CSSProperties}
+              style={
+                {
+                  "--i": i,
+                  x: exit === "left" ? "100%" : "-100%",
+                } as CSSProperties
+              }
               className="absolute inset-0"
             >
               <Image
@@ -148,10 +153,13 @@ export function Fog() {
           <div className="fog-container">
             {imagesToShow.map(({ id, src, i, exit }) => (
               <AnimatePresence key={i}>
-                { visible && (
+                {visible && (
                   <motion.div
                     key={id}
-                    initial={{ x: exit === "left" ? "100%" : "-100%", opacity: 0 }}
+                    initial={{
+                      x: exit === "left" ? "100%" : "-100%",
+                      opacity: 0,
+                    }}
                     animate={{ x: 0, opacity: 1, top: `${position.y}%` }}
                     exit={{ x: exit === "left" ? "-100%" : "100%", opacity: 0 }}
                     transition={{ duration: 3 }}
@@ -161,7 +169,7 @@ export function Fog() {
                     <Image
                       src={src}
                       alt="Fog"
-                      className="fog-layer fog-layer--animated object-cover block"
+                      className="fog-layer fog-layer--animated block object-cover"
                       width={1512}
                       height={1512}
                     />

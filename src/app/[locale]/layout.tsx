@@ -28,9 +28,9 @@ export const metadata: Metadata = {
       {
         url: "/opengraph-image.jpg",
         alt: "Image of the portfolio site",
-      }
-    ]
-  }
+      },
+    ],
+  },
 };
 
 const poppins = Poppins({
@@ -41,7 +41,7 @@ const poppins = Poppins({
 
 type Props = {
   children: ReactNode;
-  params: Promise<{locale: string}>;
+  params: Promise<{ locale: string }>;
 };
 
 export default async function RootLayout({ children, params }: Props) {
